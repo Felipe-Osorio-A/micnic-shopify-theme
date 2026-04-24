@@ -168,14 +168,38 @@ textarea {
 }
 
 .site-logo {
+  display: inline-flex;
+  align-items: center;
   font-size: 1.15rem;
   letter-spacing: 0.28em;
   text-transform: lowercase;
   white-space: nowrap;
 }
 
-.site-logo__mark {
-  margin-right: 10px;
+.site-logo__text {
+  display: inline-block;
+}
+
+.site-logo__image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 44px;
+}
+
+@media screen and (min-width: 990px) {
+  .site-logo__image {
+    width: var(--logo-width-desktop, 140px);
+    max-height: none;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  .site-logo__image {
+    width: var(--logo-width-mobile, 120px);
+    max-height: none;
+  }
 }
 
 .site-nav {

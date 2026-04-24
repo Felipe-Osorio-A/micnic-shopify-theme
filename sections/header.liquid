@@ -1,11 +1,30 @@
 {% assign main_menu_handle = section.settings.menu | default: 'main-menu' %}
 {% assign main_menu = linklists[main_menu_handle] %}
 
-<header class="site-header">
+{% capture site_logo %}
+  {% if section.settings.logo_image != blank %}
+    <img
+      class="site-logo__image"
+      src="{{ section.settings.logo_image | image_url: width: 600 }}"
+      alt="{{ section.settings.logo_alt | default: shop.name | escape }}"
+      loading="eager"
+      width="{{ section.settings.logo_image.width }}"
+      height="{{ section.settings.logo_image.height }}"
+    >
+  {% else %}
+    <span class="site-logo__text">{{ section.settings.logo_text | default: shop.name }}</span>
+  {% endif %}
+{% endcapture %}
+
+<header
+  class="site-header"
+  style="
+    --logo-width-desktop: {{ section.settings.logo_width_desktop }}px;
+    --logo-width-mobile: {{ section.settings.logo_width_mobile }}px;
+  "
+>
   <div class="page-width site-header__bar">
-    <a class="site-logo" href="{{ routes.root_url }}">
-      <span class="site-logo__mark">—</span>{{ section.settings.logo_text | default: shop.name }}
-    </a>
+    <a class="site-logo" href="{{ routes.root_url }}">{{ site_logo }}</a>
 
     <nav class="site-nav" aria-label="Primary">
       <ul class="site-nav__list">
@@ -152,9 +171,7 @@
   <div class="header-drawer" aria-hidden="true">
     <div class="header-drawer__panel" role="dialog" aria-modal="true" aria-label="Mobile menu">
       <div class="header-drawer__head">
-        <a class="site-logo" href="{{ routes.root_url }}">
-          <span class="site-logo__mark">—</span>{{ section.settings.logo_text | default: shop.name }}
-        </a>
+        <a class="site-logo" href="{{ routes.root_url }}">{{ site_logo }}</a>
         <button class="icon-button" type="button" aria-label="Close menu" data-menu-drawer-close>
           {% render 'icon', name: 'close' %}
         </button>
@@ -192,10 +209,41 @@
   "name": "Site header",
   "settings": [
     {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image"
+    },
+    {
       "type": "text",
       "id": "logo_text",
       "label": "Logo text",
       "default": "micnic"
+    },
+    {
+      "type": "text",
+      "id": "logo_alt",
+      "label": "Logo alt text",
+      "default": "micnic"
+    },
+    {
+      "type": "range",
+      "id": "logo_width_desktop",
+      "label": "Logo width desktop",
+      "min": 80,
+      "max": 260,
+      "step": 10,
+      "unit": "px",
+      "default": 140
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "label": "Logo width mobile",
+      "min": 60,
+      "max": 220,
+      "step": 10,
+      "unit": "px",
+      "default": 120
     },
     {
       "type": "link_list",
