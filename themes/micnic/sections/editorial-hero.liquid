@@ -1,0 +1,101 @@
+<section class="section-shell hero-editorial">
+  <div class="page-width hero-editorial__grid">
+    <div class="hero-editorial__content">
+      {% if section.settings.eyebrow != blank %}
+        <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+      {% endif %}
+      <h1 class="section-heading">{{ section.settings.heading }}</h1>
+      <div class="hero-editorial__description">{{ section.settings.copy }}</div>
+      <div class="hero-editorial__actions">
+        {% if section.settings.primary_label != blank %}
+          <a class="button button--secondary" href="{{ section.settings.primary_link | default: routes.all_products_collection_url }}">
+            {{ section.settings.primary_label }}
+          </a>
+        {% endif %}
+        {% if section.settings.secondary_label != blank %}
+          <a class="button" href="{{ section.settings.secondary_link | default: routes.all_products_collection_url }}">
+            {{ section.settings.secondary_label }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="hero-editorial__media">
+      {% if section.settings.image != blank %}
+        {{
+          section.settings.image
+          | image_url: width: 1800
+          | image_tag:
+            loading: 'eager',
+            widths: '720,900,1200,1500,1800',
+            sizes: '(min-width: 1100px) 60vw, 100vw',
+            alt: section.settings.heading
+        }}
+      {% else %}
+        <img
+          src="{{ 'micnic-photo-home-hero.png' | asset_url }}"
+          alt="{{ section.settings.heading | escape }}"
+          loading="eager"
+        >
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Editorial hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "premium men's lifestylewear"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Modern essentials. Timeless principles."
+    },
+    {
+      "type": "richtext",
+      "id": "copy",
+      "label": "Copy",
+      "default": "<p>Premium men’s lifestylewear that moves effortlessly from performance to everyday.</p>"
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "shop now"
+    },
+    {
+      "type": "url",
+      "id": "primary_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "view collections"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial hero"
+    }
+  ]
+}
+{% endschema %}

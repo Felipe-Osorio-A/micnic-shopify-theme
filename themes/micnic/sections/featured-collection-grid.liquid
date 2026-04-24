@@ -1,0 +1,89 @@
+{% assign chosen_collection = collections[section.settings.collection] %}
+{% assign limit = section.settings.products_to_show | default: 5 %}
+
+<section class="section-shell">
+  <div class="page-width">
+    <div style="display:flex;justify-content:space-between;gap:16px;align-items:end;margin-bottom:18px;flex-wrap:wrap;">
+      <div>
+        {% if section.settings.eyebrow != blank %}
+          <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+        {% endif %}
+        <h2 class="feature-card__title" style="font-size:1.5rem;">{{ section.settings.heading }}</h2>
+      </div>
+      {% if chosen_collection != blank %}
+        <a class="button button--secondary" href="{{ chosen_collection.url }}">
+          {{ section.settings.link_label | default: 'view all' }}
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="product-grid">
+      {% if chosen_collection != blank and chosen_collection.products_count > 0 %}
+        {% for product in chosen_collection.products limit: limit %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      {% else %}
+        {% for i in (1..limit) %}
+          <article class="product-card">
+            <div class="product-card__media">
+              <img
+                src="{{ 'micnic-photo-tee.png' | asset_url }}"
+                alt="Micnic product placeholder {{ i }}"
+                loading="lazy"
+              >
+            </div>
+            <div class="product-card__content">
+              <h3 class="product-card__title">Product {{ i }}</h3>
+              <div class="product-card__meta"><span class="price">$99.00</span></div>
+            </div>
+          </article>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured collection grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "new in"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Premium pieces built for every chapter."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "view all"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured collection grid"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,92 @@
+<section class="section-shell">
+  <div class="page-width">
+    <div class="feature-grid">
+      {% for block in section.blocks %}
+        {% assign title_handle = block.settings.title | handle %}
+        <article class="feature-card" {{ block.shopify_attributes }}>
+          <a class="feature-card__link" href="{{ block.settings.link | default: routes.all_products_collection_url }}">
+            <div class="feature-card__media">
+              {% if block.settings.image != blank %}
+                {{
+                  block.settings.image
+                  | image_url: width: 900
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '240,360,480,720,900',
+                    sizes: '(min-width: 1100px) 25vw, (min-width: 750px) 50vw, 100vw',
+                    alt: block.settings.title
+                }}
+              {% else %}
+                {% assign fallback_asset = 'micnic-photo-product-model.png' %}
+                {% if title_handle contains 'lifestyle' %}
+                  {% assign fallback_asset = 'micnic-photo-lifestyle-hero.png' %}
+                {% elsif title_handle contains 'travel' %}
+                  {% assign fallback_asset = 'micnic-photo-bag.png' %}
+                {% elsif title_handle contains 'accessories' %}
+                  {% assign fallback_asset = 'micnic-photo-cap.png' %}
+                {% endif %}
+                <img
+                  src="{{ fallback_asset | asset_url }}"
+                  alt="{{ block.settings.title | escape }}"
+                  loading="lazy"
+                >
+              {% endif %}
+            </div>
+            <div class="feature-card__content">
+              <h2 class="feature-card__title">{{ block.settings.title }}</h2>
+              <p class="feature-card__caption">{{ block.settings.caption }}</p>
+            </div>
+          </a>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Category showcase",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Tile",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "activewear"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption",
+          "default": "shop now"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category showcase",
+      "blocks": [
+        { "type": "tile" },
+        { "type": "tile", "settings": { "title": "lifestyle wear" } },
+        { "type": "tile", "settings": { "title": "travel" } },
+        { "type": "tile", "settings": { "title": "accessories" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

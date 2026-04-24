@@ -1,0 +1,54 @@
+{% assign card_product = product %}
+{% if card_product != blank %}
+  {% assign secondary_image = blank %}
+  {% if card_product.images.size > 1 %}
+    {% assign secondary_image = card_product.images[1] %}
+  {% endif %}
+  <article class="product-card">
+    <a class="product-card__link" href="{{ card_product.url }}">
+      <div class="product-card__media">
+        {% if card_product.featured_image != blank %}
+          <div class="product-card__image-stack">
+            {{
+              card_product.featured_image
+              | image_url: width: 720
+              | image_tag:
+                class: 'product-card__image product-card__image--primary',
+                loading: 'lazy',
+                widths: '240,360,480,720',
+                sizes: '(min-width: 1100px) 20vw, (min-width: 750px) 33vw, 100vw',
+                alt: card_product.featured_image.alt | default: card_product.title
+            }}
+            {% if secondary_image != blank %}
+              {{
+                secondary_image
+                | image_url: width: 720
+                | image_tag:
+                  class: 'product-card__image product-card__image--secondary',
+                  loading: 'lazy',
+                  widths: '240,360,480,720',
+                  sizes: '(min-width: 1100px) 20vw, (min-width: 750px) 33vw, 100vw',
+                  alt: secondary_image.alt | default: card_product.title
+              }}
+            {% endif %}
+          </div>
+        {% else %}
+          <img
+            src="{{ 'micnic-photo-hoodie.png' | asset_url }}"
+            alt="{{ card_product.title | escape }}"
+            loading="lazy"
+          >
+        {% endif %}
+      </div>
+      <div class="product-card__content">
+        <h3 class="product-card__title">{{ card_product.title }}</h3>
+        <div class="product-card__meta">
+          <span class="price">{{ card_product.price | money }}</span>
+          {% if card_product.compare_at_price > card_product.price %}
+            <span class="price--muted">{{ card_product.compare_at_price | money }}</span>
+          {% endif %}
+        </div>
+      </div>
+    </a>
+  </article>
+{% endif %}

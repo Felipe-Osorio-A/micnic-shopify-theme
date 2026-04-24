@@ -1,0 +1,46 @@
+<section class="section-shell brand-marquee">
+  <div class="brand-marquee__track">
+    {% for block in section.blocks %}
+      <span class="brand-marquee__item" {{ block.shopify_attributes }}>
+        {{ block.settings.text }}
+      </span>
+    {% endfor %}
+    {% for block in section.blocks %}
+      <span class="brand-marquee__item brand-marquee__item--ghost">
+        {{ block.settings.text }}
+      </span>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand marquee",
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "phrase",
+      "name": "Phrase",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "live timeless"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand marquee",
+      "blocks": [
+        { "type": "phrase", "settings": { "text": "live timeless" } },
+        { "type": "phrase", "settings": { "text": "premium fabrication" } },
+        { "type": "phrase", "settings": { "text": "city to coast" } },
+        { "type": "phrase", "settings": { "text": "training to travel" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,195 @@
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<section class="section-shell main-product">
+  <div class="page-width">
+    <div class="product-breadcrumbs">
+      <a href="{{ routes.root_url }}">home</a>
+      {% if collection %}
+        / <a href="{{ collection.url }}">{{ collection.title | downcase }}</a>
+      {% endif %}
+      / {{ product.title | downcase }}
+    </div>
+
+    <div class="main-product__layout">
+      <div class="product-gallery" data-product-gallery>
+        <div class="product-gallery__thumbs">
+          {% for media in product.media %}
+            {% if media.media_type == 'image' %}
+              <button
+                class="product-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+                type="button"
+                data-media-thumb="{{ media | image_url: width: 1400 }}"
+                data-media-srcset="{{ media | image_url: width: 720 }} 720w, {{ media | image_url: width: 1080 }} 1080w, {{ media | image_url: width: 1400 }} 1400w"
+                data-media-alt="{{ media.alt | default: product.title | escape }}"
+              >
+                <span class="media">
+                  {{
+                    media
+                    | image_url: width: 240
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '120,180,240',
+                      sizes: '92px',
+                      alt: media.alt | default: product.title
+                  }}
+                </span>
+              </button>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="product-gallery__main">
+          {% if product.featured_media != blank %}
+            <img
+              src="{{ product.featured_media | image_url: width: 1400 }}"
+              srcset="{{ product.featured_media | image_url: width: 720 }} 720w, {{ product.featured_media | image_url: width: 900 }} 900w, {{ product.featured_media | image_url: width: 1200 }} 1200w, {{ product.featured_media | image_url: width: 1400 }} 1400w"
+              sizes="(min-width: 990px) 52vw, 100vw"
+              alt="{{ product.featured_media.alt | default: product.title | escape }}"
+              loading="eager"
+              data-main-image
+            >
+          {% else %}
+            <img
+              src="{{ 'micnic-photo-product-model.png' | asset_url }}"
+              alt="{{ product.title | escape }}"
+              loading="eager"
+              data-main-image
+            >
+          {% endif %}
+        </div>
+      </div>
+
+      <div>
+        <h1 class="product-title">{{ product.title }}</h1>
+        <div class="product-price">
+          <span data-variant-price>{{ current_variant.price | money }}</span>
+          <span class="price--muted" data-variant-compare{% unless current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}>
+            {{ current_variant.compare_at_price | money }}
+          </span>
+        </div>
+
+        {% if section.settings.show_vendor and product.vendor != blank %}
+          <div class="eyebrow" style="margin-bottom:16px;">{{ product.vendor }}</div>
+        {% endif %}
+
+        <div class="product-copy">{{ product.description | truncatewords: 28 }}</div>
+
+        {% form 'product', product, class: 'product-form', data-product-form: true, data-currency: cart.currency.iso_code %}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+          <script type="application/json" data-variants-json>
+            {{ product.variants | json }}
+          </script>
+
+          {% for option in product.options_with_values %}
+            {% assign option_name = option.name | downcase %}
+            <fieldset class="product-option" data-option-group>
+              <div class="product-option__header">
+                <span>{{ option.name | downcase }}: {{ option.selected_value }}</span>
+                {% if option_name contains 'size' and section.settings.size_guide_label != blank %}
+                  <a href="{{ section.settings.size_guide_link }}">{{ section.settings.size_guide_label }}</a>
+                {% endif %}
+              </div>
+              <div class="product-option__values">
+                {% for value in option.values %}
+                  {% assign option_id = 'option-' | append: option.position | append: '-' | append: forloop.index0 %}
+                  <label style="position:relative;">
+                    <input
+                      class="product-option__input"
+                      type="radio"
+                      name="options[{{ option.name | escape }}]"
+                      value="{{ value | escape }}"
+                      {% if option.selected_value == value %}checked{% endif %}
+                    >
+                    {% if option_name contains 'color' or option_name contains 'colour' %}
+                      <span
+                        class="product-option__pill product-option__pill--swatch"
+                        style="background: {{ value | handle }};"
+                        title="{{ value }}"
+                      ></span>
+                    {% else %}
+                      <span class="product-option__pill">{{ value }}</span>
+                    {% endif %}
+                  </label>
+                {% endfor %}
+              </div>
+            </fieldset>
+          {% endfor %}
+
+          <div class="product-form__buttons">
+            <button class="button" type="submit" {% unless current_variant.available %}disabled{% endunless %}>
+              {% if current_variant.available %}add to bag{% else %}sold out{% endif %}
+            </button>
+            {{ form | payment_button }}
+          </div>
+
+          {% if section.settings.shipping_note != blank %}
+            <div class="product-form__note">{{ section.settings.shipping_note }}</div>
+          {% endif %}
+        {% endform %}
+
+        <div class="product-accordion-group">
+          {% for block in section.blocks %}
+            <details class="product-accordion" {{ block.shopify_attributes }}>
+              <summary>
+                <span>{{ block.settings.heading }}</span>
+                <span>+</span>
+              </summary>
+              <div class="product-accordion__content">{{ block.settings.content }}</div>
+            </details>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main product",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "shipping_note",
+      "label": "Shipping note",
+      "default": "Free shipping on orders over $150"
+    },
+    {
+      "type": "text",
+      "id": "size_guide_label",
+      "label": "Size guide label",
+      "default": "size guide"
+    },
+    {
+      "type": "url",
+      "id": "size_guide_link",
+      "label": "Size guide link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "accordion",
+      "name": "Accordion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "details"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Use this panel for fabric notes, fit, or shipping information.</p>"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

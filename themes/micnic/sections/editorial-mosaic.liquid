@@ -1,0 +1,122 @@
+<section class="section-shell">
+  <div class="page-width editorial-mosaic">
+    <div class="editorial-mosaic__intro reveal-on-scroll">
+      {% if section.settings.eyebrow != blank %}
+        <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+      {% endif %}
+      <h2 class="section-heading">{{ section.settings.heading }}</h2>
+      <div class="section-copy">{{ section.settings.copy }}</div>
+    </div>
+
+    <div class="editorial-mosaic__grid">
+      {% for block in section.blocks %}
+        {% assign fallback_asset = 'micnic-photo-product-model.png' %}
+        {% if forloop.index == 2 %}
+          {% assign fallback_asset = 'micnic-photo-lifestyle-hero.png' %}
+        {% elsif forloop.index == 3 %}
+          {% assign fallback_asset = 'micnic-photo-bag.png' %}
+        {% endif %}
+        <article class="editorial-mosaic__card reveal-on-scroll" {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.link | default: routes.all_products_collection_url }}">
+            <div class="editorial-mosaic__media">
+              {% if block.settings.image != blank %}
+                {{
+                  block.settings.image
+                  | image_url: width: 1200
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '360,540,720,960,1200',
+                    sizes: '(min-width: 1100px) 33vw, 100vw',
+                    alt: block.settings.heading
+                }}
+              {% else %}
+                <img
+                  src="{{ fallback_asset | asset_url }}"
+                  alt="{{ block.settings.heading | escape }}"
+                  loading="lazy"
+                >
+              {% endif %}
+            </div>
+            <div class="editorial-mosaic__content">
+              <div class="eyebrow">{{ block.settings.kicker }}</div>
+              <h3 class="feature-card__title">{{ block.settings.heading }}</h3>
+              <p class="feature-card__caption">{{ block.settings.copy }}</p>
+            </div>
+          </a>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Editorial mosaic",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "style, function and market position"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "A modern men's lifestyle universe for every chapter of the day."
+    },
+    {
+      "type": "richtext",
+      "id": "copy",
+      "label": "Copy",
+      "default": "<p>Sleek streetwear aesthetics meet high-performance design, with understated branding and a broader age appeal.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "activewear"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Clean luxury with sharper masculine focus."
+        },
+        {
+          "type": "textarea",
+          "id": "copy",
+          "label": "Copy",
+          "default": "Versatile pieces that move from training, travel and downtime to city wear."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial mosaic",
+      "blocks": [
+        { "type": "card", "settings": { "kicker": "activewear" } },
+        { "type": "card", "settings": { "kicker": "lifestyle wear", "heading": "Refined essentials with everyday wearability." } },
+        { "type": "card", "settings": { "kicker": "travel", "heading": "Built to move from city to coast with ease." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#111111">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64 }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags -%}
+        &ndash; {{ current_tags | join: ', ' }}
+      {%- endif -%}
+      {%- if current_page != 1 -%}
+        &ndash; {{ 'general.pagination.page' | t: page: current_page }}
+      {%- endif -%}
+      {%- unless page_title contains shop.name -%}
+        &ndash; {{ shop.name }}
+      {%- endunless -%}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {{ content_for_header }}
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+  </head>
+  <body class="template-{{ template.name | handle }}">
+    <a class="skip-link" href="#MainContent">Skip to content</a>
+
+    {% section 'announcement-bar' %}
+    <div id="SiteHeaderSection">
+      {% section 'header' %}
+    </div>
+
+    <main id="MainContent" class="site-main" role="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'newsletter-strip' %}
+    {% section 'site-footer' %}
+    <div id="CartDrawerSection">
+      {% section 'cart-drawer' %}
+    </div>
+  </body>
+</html>

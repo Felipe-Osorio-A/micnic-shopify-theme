@@ -1,0 +1,87 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "details": {
+          "type": "accordion",
+          "settings": {
+            "heading": "details",
+            "content": "<p>Designed for performance. Refined for every day. Lightweight, breathable and built to move with you.</p>"
+          }
+        },
+        "care": {
+          "type": "accordion",
+          "settings": {
+            "heading": "fabric & care",
+            "content": "<p>Use this panel for fabric details and care instructions.</p>"
+          }
+        },
+        "fit": {
+          "type": "accordion",
+          "settings": {
+            "heading": "fit",
+            "content": "<p>Use this panel to explain fit, sizing, and intended silhouette.</p>"
+          }
+        },
+        "shipping": {
+          "type": "accordion",
+          "settings": {
+            "heading": "shipping & returns",
+            "content": "<p>Use this panel for shipping rates, local delivery, and return windows.</p>"
+          }
+        }
+      },
+      "block_order": ["details", "care", "fit", "shipping"],
+      "settings": {}
+    },
+    "related": {
+      "type": "featured-collection-grid",
+      "settings": {
+        "eyebrow": "you may also like",
+        "heading": "A clean wardrobe, sharpened by essentials.",
+        "products_to_show": 4
+      }
+    },
+    "values": {
+      "type": "value-props",
+      "blocks": {
+        "prop-1": {
+          "type": "prop",
+          "settings": {
+            "icon": "shield",
+            "heading": "premium quality",
+            "copy": "built to last"
+          }
+        },
+        "prop-2": {
+          "type": "prop",
+          "settings": {
+            "icon": "leaf",
+            "heading": "conscious production",
+            "copy": "eco-aware mindset"
+          }
+        },
+        "prop-3": {
+          "type": "prop",
+          "settings": {
+            "icon": "spark",
+            "heading": "versatile design",
+            "copy": "for every chapter"
+          }
+        },
+        "prop-4": {
+          "type": "prop",
+          "settings": {
+            "icon": "globe",
+            "heading": "designed in sydney",
+            "copy": "worn worldwide"
+          }
+        }
+      },
+      "block_order": ["prop-1", "prop-2", "prop-3", "prop-4"],
+      "settings": {}
+    }
+  },
+  "order": ["main", "related", "values"]
+}

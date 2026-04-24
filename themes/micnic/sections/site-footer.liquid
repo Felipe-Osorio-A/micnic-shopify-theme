@@ -1,0 +1,82 @@
+<footer class="footer">
+  <div class="page-width footer-panel">
+    <div>
+      <a class="footer-logo" href="{{ routes.root_url }}">— micnic</a>
+      <p class="footer-copy">{{ section.settings.brand_copy }}</p>
+    </div>
+
+    {% for block in section.blocks %}
+      <div {{ block.shopify_attributes }}>
+        <h2 class="footer-title">{{ block.settings.heading }}</h2>
+        <ul class="footer-nav__list">
+          {% assign menu = linklists[block.settings.menu] %}
+          {% if menu != blank %}
+            {% for link in menu.links %}
+              <li><a class="footer-nav__link" href="{{ link.url }}">{{ link.title }}</a></li>
+            {% endfor %}
+          {% endif %}
+          {% if block.settings.custom_line_1 != blank %}
+            <li>{{ block.settings.custom_line_1 }}</li>
+          {% endif %}
+          {% if block.settings.custom_line_2 != blank %}
+            <li>{{ block.settings.custom_line_2 }}</li>
+          {% endif %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="page-width footer-meta">
+    <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
+    <ul class="footer-meta__list">
+      <li><a href="{{ routes.search_url }}">search</a></li>
+      <li><a href="/policies/privacy-policy">privacy policy</a></li>
+      <li><a href="/policies/terms-of-service">terms &amp; conditions</a></li>
+      <li><a href="/sitemap.xml">sitemap</a></li>
+    </ul>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Site footer",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "brand_copy",
+      "label": "Brand copy",
+      "default": "A Sydney-based brand. Designed for every chapter of modern life."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu_column",
+      "name": "Menu column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        },
+        {
+          "type": "text",
+          "id": "custom_line_1",
+          "label": "Custom line 1"
+        },
+        {
+          "type": "text",
+          "id": "custom_line_2",
+          "label": "Custom line 2"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,66 @@
+<section class="section-shell">
+  <div class="page-width collection-hero">
+    <div class="collection-hero__media">
+      {% if collection.image != blank %}
+        {{
+          collection.image
+          | image_url: width: 1800
+          | image_tag:
+            loading: 'eager',
+            widths: '720,900,1200,1500,1800',
+            sizes: '(min-width: 1100px) 60vw, 100vw',
+            alt: collection.title
+        }}
+      {% elsif section.settings.fallback_image != blank %}
+        {{
+          section.settings.fallback_image
+          | image_url: width: 1800
+          | image_tag:
+            loading: 'eager',
+            widths: '720,900,1200,1500,1800',
+            sizes: '(min-width: 1100px) 60vw, 100vw',
+            alt: collection.title
+        }}
+      {% else %}
+        <img
+          src="{{ 'micnic-photo-lifestyle-hero.png' | asset_url }}"
+          alt="{{ collection.title | escape }}"
+          loading="eager"
+        >
+      {% endif %}
+    </div>
+
+    <div class="collection-hero__content">
+      <div class="eyebrow">{{ section.settings.eyebrow | default: 'live timeless' }}</div>
+      <h1 class="section-heading">{{ collection.title }}</h1>
+      <div class="collection-hero__description">
+        {{ collection.description | default: section.settings.description }}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main collection banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "live timeless"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Fallback description",
+      "default": "<p>Timeless pieces designed for everyday life. Elevated essentials that go wherever you do.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "fallback_image",
+      "label": "Fallback image"
+    }
+  ]
+}
+{% endschema %}

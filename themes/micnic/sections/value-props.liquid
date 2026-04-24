@@ -1,0 +1,95 @@
+<section class="section-shell">
+  <div class="page-width">
+    <div class="value-props__grid">
+      {% for block in section.blocks %}
+        <article class="value-prop" {{ block.shopify_attributes }}>
+          <span class="value-prop__icon">
+            {% render 'icon', name: block.settings.icon %}
+          </span>
+          <div>
+            <h3 class="value-prop__heading">{{ block.settings.heading }}</h3>
+            <p class="value-prop__copy">{{ block.settings.copy }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Value props",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "prop",
+      "name": "Prop",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "shield", "label": "Shield" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "spark", "label": "Spark" },
+            { "value": "globe", "label": "Globe" }
+          ],
+          "default": "shield"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "premium quality"
+        },
+        {
+          "type": "text",
+          "id": "copy",
+          "label": "Copy",
+          "default": "Built to last."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Value props",
+      "blocks": [
+        {
+          "type": "prop",
+          "settings": {
+            "icon": "shield",
+            "heading": "premium quality",
+            "copy": "built to last"
+          }
+        },
+        {
+          "type": "prop",
+          "settings": {
+            "icon": "leaf",
+            "heading": "conscious production",
+            "copy": "eco-aware mindset"
+          }
+        },
+        {
+          "type": "prop",
+          "settings": {
+            "icon": "spark",
+            "heading": "versatile design",
+            "copy": "for every chapter"
+          }
+        },
+        {
+          "type": "prop",
+          "settings": {
+            "icon": "globe",
+            "heading": "designed in sydney",
+            "copy": "worn worldwide"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,680 @@
+{% liquid
+  assign current_country = localization.country.iso_code | default: '' | upcase
+  assign current_currency = cart.currency.iso_code | default: shop.currency | upcase
+  assign threshold_cents = section.settings.default_free_shipping_threshold | default: 0 | times: 100
+  assign threshold_message = section.settings.default_free_shipping_message
+  assign threshold_market_label = section.settings.default_market_label
+
+  for block in section.blocks
+    if block.type == 'market_threshold'
+      assign block_country = block.settings.country_code | upcase | strip
+      assign block_currency = block.settings.currency_code | upcase | strip
+      if block_country == current_country or block_currency == current_currency
+        assign threshold_cents = block.settings.threshold | default: 0 | times: 100
+        assign threshold_message = block.settings.message
+        assign threshold_market_label = block.settings.market_label
+        break
+      endif
+    endif
+  endfor
+
+  assign amount_remaining = threshold_cents | minus: cart.total_price
+  if amount_remaining < 0
+    assign amount_remaining = 0
+  endif
+
+  assign progress_percent = 0
+  if threshold_cents > 0
+    assign progress_percent = cart.total_price | times: 100.0 | divided_by: threshold_cents
+    if progress_percent > 100
+      assign progress_percent = 100
+    endif
+  endif
+
+  assign amount_remaining_money = amount_remaining | money
+  assign free_shipping_copy = threshold_message | default: 'You are [amount] away from free shipping.'
+  assign free_shipping_copy = free_shipping_copy | replace: '[amount]', amount_remaining_money
+
+  assign market_label_fallback = threshold_market_label
+  if market_label_fallback == blank
+    assign market_label_fallback = current_country
+  endif
+  assign free_shipping_success_copy = section.settings.free_shipping_success_message | default: 'Free shipping unlocked for [market].'
+  assign free_shipping_success_copy = free_shipping_success_copy | replace: '[market]', market_label_fallback
+%}
+
+<aside class="cart-drawer" data-cart-drawer aria-hidden="true">
+  <div class="cart-drawer__panel" role="dialog" aria-modal="true" aria-label="Cart drawer">
+    <div class="cart-drawer__header">
+      <div>
+        <div class="eyebrow">{{ section.settings.eyebrow | default: 'your bag' }}</div>
+        <h2 class="cart-drawer__title">{{ section.settings.heading | default: 'Cart' }}</h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Close cart" data-cart-drawer-close>
+        {% render 'icon', name: 'close' %}
+      </button>
+    </div>
+
+    {% if threshold_cents > 0 %}
+      <div class="cart-drawer__progress">
+        <div class="cart-drawer__progress-copy">
+          {% if cart.total_price >= threshold_cents %}
+            {{ free_shipping_success_copy }}
+          {% else %}
+            {{ free_shipping_copy }}
+          {% endif %}
+        </div>
+        <div class="cart-drawer__progress-bar">
+          <span style="width: {{ progress_percent }}%;"></span>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="cart-drawer__body">
+      {% if cart.item_count == 0 %}
+        <div class="cart-drawer__empty">
+          <p class="cart-drawer__empty-title">{{ section.settings.empty_heading }}</p>
+          <p class="footer-copy">{{ section.settings.empty_copy }}</p>
+          <button class="button" type="button" data-cart-drawer-close>{{ section.settings.empty_button_label }}</button>
+        </div>
+      {% else %}
+        <div class="cart-drawer__items">
+          {% for item in cart.items %}
+            <article class="cart-item">
+              <a class="cart-item__media" href="{{ item.url }}">
+                {% if item.image != blank %}
+                  {{
+                    item.image
+                    | image_url: width: 320
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '120,180,240,320',
+                      sizes: '96px',
+                      alt: item.title
+                  }}
+                {% else %}
+                  <img src="{{ 'micnic-product-placeholder.svg' | asset_url }}" alt="{{ item.title | escape }}" loading="lazy">
+                {% endif %}
+              </a>
+
+              <div class="cart-item__details">
+                <div class="cart-item__top">
+                  <div>
+                    <a class="cart-item__title" href="{{ item.url }}">{{ item.product.title }}</a>
+                    {% unless item.product.has_only_default_variant %}
+                      <div class="cart-item__meta">{{ item.variant.title }}</div>
+                    {% endunless %}
+                    {% if item.properties.size > 0 %}
+                      <div class="cart-item__meta">
+                        {% for property in item.properties %}
+                          {% if property.last != blank %}
+                            {% unless property.first contains '_' %}
+                              <span>{{ property.first }}: {{ property.last }}</span>
+                            {% endunless %}
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                  <div class="cart-item__price">
+                    {% if item.original_line_price > item.final_line_price %}
+                      <span class="price--muted">{{ item.original_line_price | money }}</span>
+                    {% endif %}
+                    <span>{{ item.final_line_price | money }}</span>
+                  </div>
+                </div>
+
+                <div class="cart-item__bottom">
+                  <div class="cart-quantity">
+                    <button type="button" aria-label="Decrease quantity" data-cart-line-change="{{ forloop.index }}" data-cart-line-quantity="{{ item.quantity | minus: 1 }}">−</button>
+                    <span>{{ item.quantity }}</span>
+                    <button type="button" aria-label="Increase quantity" data-cart-line-change="{{ forloop.index }}" data-cart-line-quantity="{{ item.quantity | plus: 1 }}">+</button>
+                  </div>
+                  <button class="cart-item__remove" type="button" data-cart-line-change="{{ forloop.index }}" data-cart-line-quantity="0">remove</button>
+                </div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% assign gift_blocks = section.blocks | where: 'type', 'gift_tier' %}
+      {% if gift_blocks.size > 0 %}
+        <div class="cart-drawer__module">
+          <div class="cart-drawer__module-head">
+            <div class="eyebrow">{{ section.settings.gift_eyebrow }}</div>
+            <h3 class="cart-drawer__module-title">{{ section.settings.gift_heading }}</h3>
+          </div>
+
+          {% assign rendered_gift_groups = '|' %}
+          {% for block in gift_blocks %}
+            {% assign gift_group_key = block.settings.group_key | strip %}
+            {% if gift_group_key == blank %}
+              {% assign gift_group_key = block.settings.threshold | append: '' %}
+            {% endif %}
+            {% assign group_token = '|' | append: gift_group_key | append: '|' %}
+
+            {% unless rendered_gift_groups contains group_token %}
+              {% assign rendered_gift_groups = rendered_gift_groups | append: gift_group_key | append: '|' %}
+              {% assign group_threshold_cents = block.settings.threshold | default: 0 | times: 100 %}
+              {% assign group_remaining = group_threshold_cents | minus: cart.total_price %}
+              {% if group_remaining < 0 %}
+                {% assign group_remaining = 0 %}
+              {% endif %}
+              {% assign group_remaining_money = group_remaining | money %}
+              {% assign group_available = false %}
+              {% if group_remaining <= 0 %}
+                {% assign group_available = true %}
+              {% endif %}
+              {% assign selected_group_item_title = '' %}
+              {% assign group_has_selected_gift = false %}
+              {% for item in cart.items %}
+                {% assign item_gift_group = item.properties['_micnic_gift_group'] %}
+                {% if item_gift_group == gift_group_key %}
+                  {% assign group_has_selected_gift = true %}
+                  {% assign selected_group_item_title = item.product.title %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+
+              <div class="promo-group">
+                <div class="promo-group__head">
+                  <div>
+                    <div class="promo-card__tag">{{ block.settings.group_title | default: section.settings.gift_group_default_title }}</div>
+                    <h4 class="promo-group__title">
+                      {% if block.settings.group_heading != blank %}
+                        {{ block.settings.group_heading }}
+                      {% else %}
+                        Choose one at {{ group_threshold_cents | money }}
+                      {% endif %}
+                    </h4>
+                    {% if block.settings.group_copy != blank %}
+                      <p class="promo-card__copy">{{ block.settings.group_copy }}</p>
+                    {% endif %}
+                  </div>
+                  <div class="promo-group__status">
+                    {% if group_has_selected_gift %}
+                      {{ section.settings.gift_group_selected_label | replace: '[gift]', selected_group_item_title }}
+                    {% elsif group_available %}
+                      {{ section.settings.gift_group_unlocked_label }}
+                    {% else %}
+                      {{ section.settings.gift_locked_label | replace: '[amount]', group_remaining_money }}
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="promo-cards">
+                  {% for option_block in gift_blocks %}
+                    {% assign option_group_key = option_block.settings.group_key | strip %}
+                    {% if option_group_key == blank %}
+                      {% assign option_group_key = option_block.settings.threshold | append: '' %}
+                    {% endif %}
+
+                    {% if option_group_key == gift_group_key %}
+                      {% assign gift_product = option_block.settings.product %}
+                      {% if gift_product == blank and option_block.settings.product != blank %}
+                        {% assign gift_product = all_products[option_block.settings.product] %}
+                      {% endif %}
+
+                      {% if gift_product != blank %}
+                        {% assign gift_variant = gift_product.selected_or_first_available_variant %}
+                        {% assign option_selected = false %}
+                        {% for item in cart.items %}
+                          {% assign item_gift_group = item.properties['_micnic_gift_group'] %}
+                          {% if item_gift_group == gift_group_key and item.product_id == gift_product.id %}
+                            {% assign option_selected = true %}
+                            {% break %}
+                          {% endif %}
+                        {% endfor %}
+
+                        {% capture gift_properties_json %}
+{"_micnic_offer_type":"gift","_micnic_gift_group":"{{ gift_group_key }}","_micnic_gift_threshold":"{{ block.settings.threshold }}"}
+                        {% endcapture %}
+
+                        <article class="promo-card{% if group_available %} is-active{% endif %}" {{ option_block.shopify_attributes }}>
+                          <div class="promo-card__media">
+                            {% if option_block.settings.image != blank %}
+                              {{
+                                option_block.settings.image
+                                | image_url: width: 500
+                                | image_tag:
+                                  loading: 'lazy',
+                                  widths: '180,240,360,500',
+                                  sizes: '112px',
+                                  alt: gift_product.title
+                              }}
+                            {% elsif gift_product.featured_image != blank %}
+                              {{
+                                gift_product.featured_image
+                                | image_url: width: 500
+                                | image_tag:
+                                  loading: 'lazy',
+                                  widths: '180,240,360,500',
+                                  sizes: '112px',
+                                  alt: gift_product.title
+                              }}
+                            {% else %}
+                              <img src="{{ 'micnic-product-placeholder.svg' | asset_url }}" alt="{{ gift_product.title | escape }}" loading="lazy">
+                            {% endif %}
+                          </div>
+
+                          <div class="promo-card__content">
+                            <div class="promo-card__tag">gift option</div>
+                            <h4 class="promo-card__title">{{ option_block.settings.heading | default: gift_product.title }}</h4>
+                            {% if option_block.settings.copy != blank %}
+                              <p class="promo-card__copy">{{ option_block.settings.copy }}</p>
+                            {% endif %}
+
+                            {% if option_selected %}
+                              <span class="promo-card__status is-success">{{ section.settings.gift_added_label }}</span>
+                            {% elsif group_has_selected_gift %}
+                              <span class="promo-card__status">{{ section.settings.gift_group_taken_label }}</span>
+                            {% elsif group_available and gift_variant != blank and gift_variant.available %}
+                              <button
+                                class="button button--secondary promo-card__button"
+                                type="button"
+                                data-cart-add-variant="{{ gift_variant.id }}"
+                                data-cart-add-kind="gift"
+                                data-cart-add-properties="{{ gift_properties_json | strip | escape }}"
+                              >
+                                {{ section.settings.gift_button_label }}
+                              </button>
+                            {% else %}
+                              <span class="promo-card__status">
+                                {{ section.settings.gift_locked_label | replace: '[amount]', group_remaining_money }}
+                              </span>
+                            {% endif %}
+                          </div>
+                        </article>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            {% endunless %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% assign upsell_blocks = section.blocks | where: 'type', 'upsell_product' %}
+      {% if upsell_blocks.size > 0 %}
+        <div class="cart-drawer__module">
+          <div class="cart-drawer__module-head">
+            <div class="eyebrow">{{ section.settings.upsell_eyebrow }}</div>
+            <h3 class="cart-drawer__module-title">{{ section.settings.upsell_heading }}</h3>
+          </div>
+
+          <div class="promo-cards">
+            {% for block in upsell_blocks %}
+              {% assign upsell_product = block.settings.product %}
+              {% if upsell_product == blank and block.settings.product != blank %}
+                {% assign upsell_product = all_products[block.settings.product] %}
+              {% endif %}
+              {% if upsell_product != blank %}
+                {% assign upsell_variant = upsell_product.selected_or_first_available_variant %}
+                {% assign upsell_in_cart = false %}
+                {% for item in cart.items %}
+                  {% if item.product_id == upsell_product.id %}
+                    {% assign upsell_in_cart = true %}
+                    {% break %}
+                  {% endif %}
+                {% endfor %}
+
+                {% unless upsell_in_cart %}
+                  <article class="promo-card" {{ block.shopify_attributes }}>
+                    <a class="promo-card__media" href="{{ upsell_product.url }}">
+                      {% if block.settings.image != blank %}
+                        {{
+                          block.settings.image
+                          | image_url: width: 500
+                          | image_tag:
+                            loading: 'lazy',
+                            widths: '180,240,360,500',
+                            sizes: '112px',
+                            alt: upsell_product.title
+                        }}
+                      {% elsif upsell_product.featured_image != blank %}
+                        {{
+                          upsell_product.featured_image
+                          | image_url: width: 500
+                          | image_tag:
+                            loading: 'lazy',
+                            widths: '180,240,360,500',
+                            sizes: '112px',
+                            alt: upsell_product.title
+                        }}
+                      {% else %}
+                        <img src="{{ 'micnic-product-placeholder.svg' | asset_url }}" alt="{{ upsell_product.title | escape }}" loading="lazy">
+                      {% endif %}
+                    </a>
+
+                    <div class="promo-card__content">
+                      {% if block.settings.kicker != blank %}
+                        <div class="promo-card__tag">{{ block.settings.kicker }}</div>
+                      {% endif %}
+                      <h4 class="promo-card__title">{{ block.settings.heading | default: upsell_product.title }}</h4>
+                      {% if block.settings.copy != blank %}
+                        <p class="promo-card__copy">{{ block.settings.copy }}</p>
+                      {% endif %}
+                      <div class="promo-card__footer">
+                        <span>{{ upsell_product.price | money }}</span>
+                        {% if upsell_variant != blank and upsell_variant.available %}
+                          <button
+                            class="button button--secondary promo-card__button"
+                            type="button"
+                            data-cart-add-variant="{{ upsell_variant.id }}"
+                            data-cart-add-kind="upsell"
+                          >
+                            {{ section.settings.upsell_button_label }}
+                          </button>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </article>
+                {% endunless %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="cart-drawer__footer">
+      <div class="cart-drawer__subtotal">
+        <span>{{ section.settings.subtotal_label }}</span>
+        <strong>{{ cart.total_price | money }}</strong>
+      </div>
+      {% if section.settings.subtotal_note != blank %}
+        <p class="cart-drawer__note">{{ section.settings.subtotal_note }}</p>
+      {% endif %}
+
+      <form action="{{ routes.cart_url }}" method="post">
+        <button class="button cart-drawer__checkout" type="submit" name="checkout" {% if cart.item_count == 0 %}disabled{% endif %}>
+          {{ section.settings.checkout_label }}
+        </button>
+      </form>
+    </div>
+  </div>
+</aside>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "your bag"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Cart"
+    },
+    {
+      "type": "text",
+      "id": "default_market_label",
+      "label": "Default market label",
+      "default": "your market"
+    },
+    {
+      "type": "number",
+      "id": "default_free_shipping_threshold",
+      "label": "Default free shipping threshold",
+      "default": 150
+    },
+    {
+      "type": "text",
+      "id": "default_free_shipping_message",
+      "label": "Free shipping message",
+      "default": "You are [amount] away from free shipping."
+    },
+    {
+      "type": "text",
+      "id": "free_shipping_success_message",
+      "label": "Free shipping success message",
+      "default": "Free shipping unlocked for [market]."
+    },
+    {
+      "type": "text",
+      "id": "gift_eyebrow",
+      "label": "Gift module eyebrow",
+      "default": "rewards"
+    },
+    {
+      "type": "text",
+      "id": "gift_heading",
+      "label": "Gift module heading",
+      "default": "Choose your gift with purchase"
+    },
+    {
+      "type": "text",
+      "id": "gift_group_default_title",
+      "label": "Gift group default title",
+      "default": "gift with purchase"
+    },
+    {
+      "type": "text",
+      "id": "gift_button_label",
+      "label": "Gift button label",
+      "default": "add gift"
+    },
+    {
+      "type": "text",
+      "id": "gift_added_label",
+      "label": "Gift added label",
+      "default": "Added to cart"
+    },
+    {
+      "type": "text",
+      "id": "gift_group_unlocked_label",
+      "label": "Gift group unlocked label",
+      "default": "Choose one reward"
+    },
+    {
+      "type": "text",
+      "id": "gift_group_selected_label",
+      "label": "Gift group selected label",
+      "default": "Selected: [gift]"
+    },
+    {
+      "type": "text",
+      "id": "gift_group_taken_label",
+      "label": "Gift group taken label",
+      "default": "One gift already chosen for this tier"
+    },
+    {
+      "type": "text",
+      "id": "gift_locked_label",
+      "label": "Gift locked label",
+      "default": "Spend [amount] more to unlock"
+    },
+    {
+      "type": "text",
+      "id": "upsell_eyebrow",
+      "label": "Upsell module eyebrow",
+      "default": "complete the look"
+    },
+    {
+      "type": "text",
+      "id": "upsell_heading",
+      "label": "Upsell module heading",
+      "default": "Curated add-ons"
+    },
+    {
+      "type": "text",
+      "id": "upsell_button_label",
+      "label": "Upsell button label",
+      "default": "add"
+    },
+    {
+      "type": "text",
+      "id": "empty_heading",
+      "label": "Empty cart heading",
+      "default": "Your cart is empty."
+    },
+    {
+      "type": "textarea",
+      "id": "empty_copy",
+      "label": "Empty cart copy",
+      "default": "Build a timeless wardrobe with premium essentials for training, travel, and every day."
+    },
+    {
+      "type": "text",
+      "id": "empty_button_label",
+      "label": "Empty cart button label",
+      "default": "continue shopping"
+    },
+    {
+      "type": "text",
+      "id": "subtotal_label",
+      "label": "Subtotal label",
+      "default": "Subtotal"
+    },
+    {
+      "type": "textarea",
+      "id": "subtotal_note",
+      "label": "Subtotal note",
+      "default": "Taxes, duties, and shipping are calculated at checkout."
+    },
+    {
+      "type": "text",
+      "id": "checkout_label",
+      "label": "Checkout button label",
+      "default": "checkout"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "market_threshold",
+      "name": "Market threshold",
+      "settings": [
+        {
+          "type": "text",
+          "id": "market_label",
+          "label": "Market label",
+          "default": "Australia"
+        },
+        {
+          "type": "text",
+          "id": "country_code",
+          "label": "Country code",
+          "default": "AU"
+        },
+        {
+          "type": "text",
+          "id": "currency_code",
+          "label": "Currency code",
+          "default": "AUD"
+        },
+        {
+          "type": "number",
+          "id": "threshold",
+          "label": "Free shipping threshold",
+          "default": 150
+        },
+        {
+          "type": "text",
+          "id": "message",
+          "label": "Message",
+          "default": "You are [amount] away from free shipping."
+        }
+      ]
+    },
+    {
+      "type": "gift_tier",
+      "name": "Gift tier",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Gift product"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Override image"
+        },
+        {
+          "type": "text",
+          "id": "group_key",
+          "label": "Group key",
+          "default": "tier-150"
+        },
+        {
+          "type": "text",
+          "id": "group_title",
+          "label": "Group title",
+          "default": "gift with purchase"
+        },
+        {
+          "type": "text",
+          "id": "group_heading",
+          "label": "Group heading",
+          "default": "Choose one at $150"
+        },
+        {
+          "type": "textarea",
+          "id": "group_copy",
+          "label": "Group copy",
+          "default": "Offer multiple gift options at the same spend threshold."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Bonus gift"
+        },
+        {
+          "type": "textarea",
+          "id": "copy",
+          "label": "Copy",
+          "default": "Unlock this limited reward when your cart reaches the threshold."
+        },
+        {
+          "type": "number",
+          "id": "threshold",
+          "label": "Cart threshold",
+          "default": 200
+        }
+      ]
+    },
+    {
+      "type": "upsell_product",
+      "name": "Upsell product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Override image"
+        },
+        {
+          "type": "text",
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "recommended"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Finish the set"
+        },
+        {
+          "type": "textarea",
+          "id": "copy",
+          "label": "Copy",
+          "default": "Merchandise a companion product inside the cart drawer."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

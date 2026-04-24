@@ -1,0 +1,152 @@
+{
+  "sections": {
+    "hero": {
+      "type": "editorial-hero",
+      "settings": {
+        "eyebrow": "premium men's lifestylewear",
+        "heading": "Modern essentials. Timeless principles."
+      }
+    },
+    "categories": {
+      "type": "category-showcase",
+      "blocks": {
+        "tile-1": {
+          "type": "tile",
+          "settings": {
+            "title": "activewear",
+            "caption": "shop now"
+          }
+        },
+        "tile-2": {
+          "type": "tile",
+          "settings": {
+            "title": "lifestyle wear",
+            "caption": "shop now"
+          }
+        },
+        "tile-3": {
+          "type": "tile",
+          "settings": {
+            "title": "travel",
+            "caption": "shop now"
+          }
+        },
+        "tile-4": {
+          "type": "tile",
+          "settings": {
+            "title": "accessories",
+            "caption": "shop now"
+          }
+        }
+      },
+      "block_order": ["tile-1", "tile-2", "tile-3", "tile-4"],
+      "settings": {}
+    },
+    "marquee": {
+      "type": "brand-marquee",
+      "blocks": {
+        "phrase-1": {
+          "type": "phrase",
+          "settings": {
+            "text": "live timeless"
+          }
+        },
+        "phrase-2": {
+          "type": "phrase",
+          "settings": {
+            "text": "premium fabrication"
+          }
+        },
+        "phrase-3": {
+          "type": "phrase",
+          "settings": {
+            "text": "city to coast"
+          }
+        },
+        "phrase-4": {
+          "type": "phrase",
+          "settings": {
+            "text": "training to travel"
+          }
+        }
+      },
+      "block_order": ["phrase-1", "phrase-2", "phrase-3", "phrase-4"],
+      "settings": {}
+    },
+    "story": {
+      "type": "split-story",
+      "settings": {}
+    },
+    "mosaic": {
+      "type": "editorial-mosaic",
+      "blocks": {
+        "card-1": {
+          "type": "card",
+          "settings": {
+            "kicker": "activewear"
+          }
+        },
+        "card-2": {
+          "type": "card",
+          "settings": {
+            "kicker": "lifestyle wear",
+            "heading": "Refined essentials with everyday wearability."
+          }
+        },
+        "card-3": {
+          "type": "card",
+          "settings": {
+            "kicker": "travel",
+            "heading": "Built to move from city to coast with ease."
+          }
+        }
+      },
+      "block_order": ["card-1", "card-2", "card-3"],
+      "settings": {}
+    },
+    "featured": {
+      "type": "featured-collection-grid",
+      "settings": {}
+    },
+    "values": {
+      "type": "value-props",
+      "blocks": {
+        "prop-1": {
+          "type": "prop",
+          "settings": {
+            "icon": "shield",
+            "heading": "premium quality",
+            "copy": "built to last"
+          }
+        },
+        "prop-2": {
+          "type": "prop",
+          "settings": {
+            "icon": "leaf",
+            "heading": "conscious production",
+            "copy": "eco-aware mindset"
+          }
+        },
+        "prop-3": {
+          "type": "prop",
+          "settings": {
+            "icon": "spark",
+            "heading": "versatile design",
+            "copy": "for every chapter"
+          }
+        },
+        "prop-4": {
+          "type": "prop",
+          "settings": {
+            "icon": "globe",
+            "heading": "designed in sydney",
+            "copy": "worn worldwide"
+          }
+        }
+      },
+      "block_order": ["prop-1", "prop-2", "prop-3", "prop-4"],
+      "settings": {}
+    }
+  },
+  "order": ["hero", "categories", "marquee", "story", "mosaic", "featured", "values"]
+}

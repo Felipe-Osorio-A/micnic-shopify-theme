@@ -1,0 +1,161 @@
+<section class="section-shell">
+  <div class="page-width">
+    {% paginate collection.products by section.settings.products_per_page %}
+      {% if section.settings.enable_filters and collection.filters != blank %}
+        <form class="collection-filters" method="get">
+          <div class="collection-filters__header">
+            <div>
+              <div class="eyebrow">filter</div>
+              <h2 class="feature-card__title" style="font-size:1.2rem;">Refine the edit</h2>
+            </div>
+            <button class="button button--secondary" type="submit">apply filters</button>
+          </div>
+
+          <div class="collection-filters__grid">
+            {% for filter in collection.filters %}
+              <details class="collection-filter" open>
+                <summary>
+                  <span>{{ filter.label }}</span>
+                  <span>{{ filter.active_values.size }}</span>
+                </summary>
+
+                <div class="collection-filter__body">
+                  {% case filter.type %}
+                    {% when 'list' %}
+                      <ul class="collection-filter__list">
+                        {% for filter_value in filter.values %}
+                          <li>
+                            <label class="collection-filter__item{% unless filter_value.count > 0 or filter_value.active %} is-disabled{% endunless %}">
+                              <span>
+                                <input
+                                  type="checkbox"
+                                  name="{{ filter_value.param_name }}"
+                                  value="{{ filter_value.value }}"
+                                  {% if filter_value.active %}checked{% endif %}
+                                  {% unless filter_value.count > 0 or filter_value.active %}disabled{% endunless %}
+                                >
+                                {{ filter_value.label }}
+                              </span>
+                              <span>{{ filter_value.count }}</span>
+                            </label>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    {% when 'price_range' %}
+                      <div class="collection-filter__price">
+                        <label>
+                          <span>min</span>
+                          <input
+                            class="newsletter-form__field"
+                            name="{{ filter.min_value.param_name }}"
+                            type="number"
+                            value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                            placeholder="0"
+                          >
+                        </label>
+                        <label>
+                          <span>max</span>
+                          <input
+                            class="newsletter-form__field"
+                            name="{{ filter.max_value.param_name }}"
+                            type="number"
+                            value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                            placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                          >
+                        </label>
+                      </div>
+                  {% endcase %}
+                </div>
+              </details>
+            {% endfor %}
+          </div>
+
+          {% if collection.filters_active_values.size > 0 %}
+            <div class="collection-filters__active">
+              {% for active_value in collection.filters_active_values %}
+                <a class="toolbar-tags__link is-active" href="{{ active_value.url_to_remove }}">{{ active_value.label }}</a>
+              {% endfor %}
+              <a class="toolbar-tags__link" href="{{ collection.url }}">clear all</a>
+            </div>
+          {% endif %}
+        </form>
+      {% endif %}
+
+      <div class="collection-toolbar">
+        <div class="toolbar-tags">
+          {% if current_tags %}
+            <a class="toolbar-tags__link is-active" href="{{ collection.url }}">all</a>
+          {% endif %}
+          {% for tag in collection.all_tags limit: 6 %}
+            <a
+              class="toolbar-tags__link{% if current_tags contains tag %} is-active{% endif %}"
+              href="{{ collection.url }}/{{ tag | handle }}"
+            >
+              {{ tag }}
+            </a>
+          {% endfor %}
+        </div>
+
+        <form class="sort-form" method="get">
+          <label for="SortBy">sort:</label>
+          <select id="SortBy" name="sort_by" onchange="this.form.submit()">
+            {% for option in collection.sort_options %}
+              <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>
+                {{ option.name | downcase }}
+              </option>
+            {% endfor %}
+          </select>
+        </form>
+      </div>
+
+      <div class="product-grid">
+        {% for product in collection.products %}
+          {% render 'product-card', product: product %}
+        {% else %}
+          <p>No products found.</p>
+        {% endfor %}
+      </div>
+
+      {% if paginate.pages > 1 %}
+        <nav class="pagination" aria-label="Pagination">
+          {% if paginate.previous %}
+            <a href="{{ paginate.previous.url }}">←</a>
+          {% endif %}
+          {% for part in paginate.parts %}
+            {% if part.is_link %}
+              <a href="{{ part.url }}">{{ part.title }}</a>
+            {% else %}
+              <span{% if part.title == paginate.current_page %} class="is-active"{% endif %}>{{ part.title }}</span>
+            {% endif %}
+          {% endfor %}
+          {% if paginate.next %}
+            <a href="{{ paginate.next.url }}">→</a>
+          {% endif %}
+        </nav>
+      {% endif %}
+    {% endpaginate %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main collection product grid",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_filters",
+      "label": "Enable storefront filters",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 24,
+      "step": 4,
+      "default": 12
+    }
+  ]
+}
+{% endschema %}

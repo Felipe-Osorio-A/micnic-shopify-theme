@@ -1,0 +1,71 @@
+<section class="main-cart section-shell">
+  <div class="page-width">
+    <div class="eyebrow">your bag</div>
+    <h1 class="section-heading">Cart</h1>
+
+    {% if cart.item_count == 0 %}
+      <div class="cart-drawer__empty" style="max-width: 480px; margin-top: 20px;">
+        <p class="cart-drawer__empty-title">Your cart is empty.</p>
+        <p class="footer-copy">Build a timeless wardrobe with premium essentials for training, travel, and every day.</p>
+        <a class="button" href="{{ routes.all_products_collection_url }}">continue shopping</a>
+      </div>
+    {% else %}
+      <div class="main-cart__layout">
+        <div class="cart-drawer__items">
+          {% for item in cart.items %}
+            <article class="cart-item">
+              <a class="cart-item__media" href="{{ item.url }}">
+                {% if item.image != blank %}
+                  {{
+                    item.image
+                    | image_url: width: 320
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '120,180,240,320',
+                      sizes: '96px',
+                      alt: item.title
+                  }}
+                {% else %}
+                  <img src="{{ 'micnic-product-placeholder.svg' | asset_url }}" alt="{{ item.title | escape }}" loading="lazy">
+                {% endif %}
+              </a>
+
+              <div class="cart-item__details">
+                <div class="cart-item__top">
+                  <div>
+                    <a class="cart-item__title" href="{{ item.url }}">{{ item.product.title }}</a>
+                    {% unless item.product.has_only_default_variant %}
+                      <div class="cart-item__meta">{{ item.variant.title }}</div>
+                    {% endunless %}
+                  </div>
+                  <div class="cart-item__price">{{ item.final_line_price | money }}</div>
+                </div>
+
+                <div class="cart-item__meta">Quantity: {{ item.quantity }}</div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+
+        <div class="main-cart__summary">
+          <div class="cart-drawer__subtotal">
+            <span>Subtotal</span>
+            <strong>{{ cart.total_price | money }}</strong>
+          </div>
+          <p class="cart-drawer__note">Taxes, duties, and shipping are calculated at checkout.</p>
+
+          <form action="{{ routes.cart_url }}" method="post">
+            <button class="button cart-drawer__checkout" type="submit" name="checkout">checkout</button>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main cart",
+  "settings": []
+}
+{% endschema %}

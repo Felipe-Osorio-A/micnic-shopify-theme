@@ -1,0 +1,54 @@
+{% case name %}
+  {% when 'search' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+      <circle cx="11" cy="11" r="6.5"></circle>
+      <path d="M16 16l5 5"></path>
+    </svg>
+  {% when 'account' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+      <circle cx="12" cy="8" r="3.5"></circle>
+      <path d="M5.5 20a6.5 6.5 0 0 1 13 0"></path>
+    </svg>
+  {% when 'bag' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+      <path d="M7 8V7a5 5 0 0 1 10 0v1"></path>
+      <path d="M5 8h14l-1 12H6L5 8Z"></path>
+    </svg>
+  {% when 'menu' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+      <path d="M4 7h16M4 12h16M4 17h16"></path>
+    </svg>
+  {% when 'close' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+      <path d="M6 6l12 12M18 6l-12 12"></path>
+    </svg>
+  {% when 'chevron' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+      <path d="M6 9l6 6 6-6"></path>
+    </svg>
+  {% when 'arrow-right' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+      <path d="M4 12h14"></path>
+      <path d="M13 6l6 6-6 6"></path>
+    </svg>
+  {% when 'spark' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+      <path d="M12 2l1.6 4.4L18 8l-4.4 1.6L12 14l-1.6-4.4L6 8l4.4-1.6L12 2Z"></path>
+      <path d="M18 14l.8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8L18 14Z"></path>
+    </svg>
+  {% when 'globe' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+      <circle cx="12" cy="12" r="9"></circle>
+      <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path>
+    </svg>
+  {% when 'leaf' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+      <path d="M19 4c-8 0-14 5-14 12 0 2.5 1.5 4 4 4 7 0 12-6 12-14V4h-2Z"></path>
+      <path d="M8 16c2.5-2.5 5.5-4.5 10-6"></path>
+    </svg>
+  {% when 'shield' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+      <path d="M12 3l7 3v5c0 4.5-2.4 8.6-7 10-4.6-1.4-7-5.5-7-10V6l7-3Z"></path>
+      <path d="M9 12l2 2 4-4"></path>
+    </svg>
+{% endcase %}

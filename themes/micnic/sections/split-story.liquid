@@ -1,0 +1,84 @@
+<section class="section-shell">
+  <div class="page-width">
+    <article class="story-card">
+      <div class="story-card__content">
+        {% if section.settings.eyebrow != blank %}
+          <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+        {% endif %}
+        <h2 class="section-heading">{{ section.settings.heading }}</h2>
+        <div class="section-copy">{{ section.settings.copy }}</div>
+        {% if section.settings.link_label != blank %}
+          <a class="button button--secondary" href="{{ section.settings.link | default: routes.root_url }}">
+            {{ section.settings.link_label }}
+          </a>
+        {% endif %}
+      </div>
+      <div class="story-card__media">
+      {% if section.settings.image != blank %}
+        {{
+          section.settings.image
+            | image_url: width: 1600
+            | image_tag:
+              loading: 'lazy',
+              widths: '720,900,1200,1600',
+              sizes: '(min-width: 1100px) 60vw, 100vw',
+            alt: section.settings.heading
+        }}
+      {% else %}
+        <img
+          src="{{ 'micnic-story-sydney.svg' | asset_url }}"
+          alt="{{ section.settings.heading | escape }}"
+          loading="lazy"
+        >
+      {% endif %}
+    </div>
+  </article>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Split story",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "designed in sydney"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Designed in Sydney. Worn worldwide."
+    },
+    {
+      "type": "richtext",
+      "id": "copy",
+      "label": "Copy",
+      "default": "<p>Our pieces are crafted for everyday life, everywhere you go.</p>"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "learn more"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Split story"
+    }
+  ]
+}
+{% endschema %}
