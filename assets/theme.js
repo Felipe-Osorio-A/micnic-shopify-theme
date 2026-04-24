@@ -39,6 +39,7 @@ async function renderCartSections({ openCart = false } = {}) {
   replaceSection("SiteHeaderSection", sections["header"]);
   replaceSection("CartDrawerSection", sections["cart-drawer"]);
 
+  initHeaderBehavior();
   initRevealObserver();
   bindProductForms();
 
@@ -108,6 +109,69 @@ function initRevealObserver() {
   );
 
   reveals.forEach((item) => observer.observe(item));
+}
+
+function initHeaderBehavior() {
+  window.micnicHeaderController?.abort?.();
+
+  const controller = new AbortController();
+  const { signal } = controller;
+  window.micnicHeaderController = controller;
+
+  const headerSection = document.getElementById("SiteHeaderSection");
+  const header = headerSection?.querySelector("[data-site-header]");
+  const announcementBar = document.querySelector("[data-announcement-bar]");
+
+  if (!headerSection || !header) return;
+
+  const stickyEnabled = header.dataset.stickyEnabled === "true";
+  const transparentEnabled = header.dataset.transparentEnabled === "true";
+  const firstSection = document.querySelector("#MainContent > .shopify-section:first-child");
+  const transparentHeroEnabled = Boolean(
+    transparentEnabled && firstSection?.querySelector(".hero-editorial, .collection-hero")
+  );
+
+  function measureHeader() {
+    const computedHeight =
+      header.offsetHeight ||
+      parseInt(getComputedStyle(document.documentElement).getPropertyValue("--header-height"), 10) ||
+      0;
+
+    document.documentElement.style.setProperty("--site-header-height", `${computedHeight}px`);
+    document.documentElement.style.setProperty("--site-header-total-height", `${computedHeight}px`);
+    headerSection.style.minHeight = stickyEnabled ? `${computedHeight}px` : "";
+  }
+
+  function updateHeaderState() {
+    const announcementHeight = announcementBar ? announcementBar.offsetHeight : 0;
+    const shouldPin = stickyEnabled && window.scrollY > announcementHeight;
+
+    headerSection.classList.toggle("is-header-pinned", shouldPin);
+    header.classList.toggle("is-scrolled", window.scrollY > 8);
+    document.body.classList.toggle("has-sticky-header", stickyEnabled);
+    document.body.classList.toggle("has-transparent-header", transparentEnabled);
+    document.body.classList.toggle("has-transparent-hero", transparentHeroEnabled);
+  }
+
+  measureHeader();
+  updateHeaderState();
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      updateHeaderState();
+    },
+    { passive: true, signal }
+  );
+
+  window.addEventListener(
+    "resize",
+    () => {
+      measureHeader();
+      updateHeaderState();
+    },
+    { passive: true, signal }
+  );
 }
 
 function bindProductForms() {
@@ -316,4 +380,5 @@ document.addEventListener("keydown", (event) => {
 });
 
 initRevealObserver();
+initHeaderBehavior();
 bindProductForms();

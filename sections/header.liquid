@@ -30,6 +30,9 @@
 
 <header
   class="site-header{% if section.settings.enable_sticky %} site-header--sticky{% else %} site-header--static{% endif %}{% if transparent_header %} site-header--transparent{% endif %}"
+  data-site-header
+  data-sticky-enabled="{% if section.settings.enable_sticky %}true{% else %}false{% endif %}"
+  data-transparent-enabled="{% if transparent_header %}true{% else %}false{% endif %}"
   style="
     --logo-width-desktop: {{ section.settings.logo_width_desktop }}px;
     --logo-width-mobile: {{ section.settings.logo_width_mobile }}px;

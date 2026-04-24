@@ -2,6 +2,8 @@
   --page-width: 1440px;
   --content-width: 1320px;
   --gutter: 24px;
+  --site-header-height: 76px;
+  --site-header-total-height: 76px;
   --color-bg: #e9e4de;
   --color-surface: #f3efe9;
   --color-surface-strong: #dfd7cf;
@@ -168,6 +170,11 @@ textarea {
   text-transform: uppercase;
 }
 
+#SiteHeaderSection {
+  position: relative;
+  z-index: 50;
+}
+
 .site-header {
   position: relative;
   top: 0;
@@ -194,6 +201,39 @@ textarea {
 .site-header--transparent .site-nav__link,
 .site-header--transparent .icon-button {
   color: var(--header-transparent-text, var(--color-text));
+}
+
+#SiteHeaderSection.is-header-pinned .site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+#SiteHeaderSection.is-header-pinned .site-header.site-header--transparent {
+  background: var(--color-header-glass);
+  border-bottom-color: var(--color-border);
+}
+
+body.has-transparent-header #SiteHeaderSection:not(.is-header-pinned) .site-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+body.has-transparent-hero #SiteHeaderSection {
+  margin-bottom: calc(var(--site-header-height) * -1);
+}
+
+body.has-transparent-hero #MainContent > .shopify-section:first-child .hero-editorial {
+  padding-top: calc(var(--site-header-height) + 18px);
+}
+
+body.has-transparent-hero #MainContent > .shopify-section:first-child .collection-hero {
+  padding-top: calc(var(--site-header-height) + 24px);
 }
 
 .site-header__bar {
@@ -1536,6 +1576,8 @@ body.cart-drawer-open .cart-drawer__panel {
   :root {
     --gutter: 18px;
     --header-height: 68px;
+    --site-header-height: 68px;
+    --site-header-total-height: 68px;
   }
 
   .site-nav {
@@ -1571,6 +1613,14 @@ body.cart-drawer-open .cart-drawer__panel {
 }
 
 @media screen and (max-width: 749px) {
+  body.has-transparent-hero #MainContent > .shopify-section:first-child .hero-editorial {
+    padding-top: calc(var(--site-header-height) + 10px);
+  }
+
+  body.has-transparent-hero #MainContent > .shopify-section:first-child .collection-hero {
+    padding-top: calc(var(--site-header-height) + 18px);
+  }
+
   .section-shell {
     padding: 20px 0;
   }
