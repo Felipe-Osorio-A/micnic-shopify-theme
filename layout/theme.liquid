@@ -1,9 +1,83 @@
 <!doctype html>
+{% liquid
+  assign palette_mode = settings.palette_preset | default: 'sand'
+
+  case palette_mode
+    when 'monochrome'
+      assign palette_bg = '#f3f2ee'
+      assign palette_surface = '#faf8f4'
+      assign palette_surface_strong = '#d9d5ce'
+      assign palette_text = '#111111'
+      assign palette_muted = '#5e5953'
+      assign palette_accent = '#111111'
+      assign palette_button_bg = '#111111'
+      assign palette_button_text = '#ffffff'
+      assign palette_footer_bg = '#111111'
+      assign palette_footer_text = '#f3eee8'
+    when 'nocturne'
+      assign palette_bg = '#151617'
+      assign palette_surface = '#1d1f20'
+      assign palette_surface_strong = '#2a2d2f'
+      assign palette_text = '#f5f2eb'
+      assign palette_muted = '#b7b1a7'
+      assign palette_accent = '#c9b089'
+      assign palette_button_bg = '#f5f2eb'
+      assign palette_button_text = '#151617'
+      assign palette_footer_bg = '#0f1011'
+      assign palette_footer_text = '#f5f2eb'
+    when 'coastal'
+      assign palette_bg = '#e8e4de'
+      assign palette_surface = '#f5f2ed'
+      assign palette_surface_strong = '#cfd8dc'
+      assign palette_text = '#18212a'
+      assign palette_muted = '#5e6870'
+      assign palette_accent = '#496777'
+      assign palette_button_bg = '#18212a'
+      assign palette_button_text = '#ffffff'
+      assign palette_footer_bg = '#18212a'
+      assign palette_footer_text = '#edf1f3'
+    when 'custom'
+      assign palette_bg = settings.custom_color_bg | default: '#e9e4de'
+      assign palette_surface = settings.custom_color_surface | default: '#f3efe9'
+      assign palette_surface_strong = settings.custom_color_surface_strong | default: '#dfd7cf'
+      assign palette_text = settings.custom_color_text | default: '#111111'
+      assign palette_muted = settings.custom_color_muted | default: '#6b655f'
+      assign palette_accent = settings.custom_color_accent | default: '#111111'
+      assign palette_button_bg = settings.custom_color_button_bg | default: '#111111'
+      assign palette_button_text = settings.custom_color_button_text | default: '#ffffff'
+      assign palette_footer_bg = settings.custom_color_footer_bg | default: '#111111'
+      assign palette_footer_text = settings.custom_color_footer_text | default: '#f0ebe5'
+    else
+      assign palette_bg = '#e9e4de'
+      assign palette_surface = '#f3efe9'
+      assign palette_surface_strong = '#dfd7cf'
+      assign palette_text = '#111111'
+      assign palette_muted = '#6b655f'
+      assign palette_accent = '#111111'
+      assign palette_button_bg = '#111111'
+      assign palette_button_text = '#ffffff'
+      assign palette_footer_bg = '#111111'
+      assign palette_footer_text = '#f0ebe5'
+  endcase
+
+  assign palette_border = palette_text | color_modify: 'alpha', 0.12
+  assign palette_border_strong = palette_text | color_modify: 'alpha', 0.28
+  assign palette_tint_soft = palette_text | color_modify: 'alpha', 0.05
+  assign palette_overlay = palette_text | color_modify: 'alpha', 0.45
+  assign palette_header_glass = palette_bg | color_modify: 'alpha', 0.92
+  assign palette_surface_soft = palette_surface | color_modify: 'alpha', 0.24
+  assign palette_surface_medium = palette_surface | color_modify: 'alpha', 0.18
+  assign palette_surface_drawer = palette_surface | color_modify: 'alpha', 0.98
+  assign palette_footer_border = palette_footer_text | color_modify: 'alpha', 0.12
+  assign palette_footer_muted = palette_footer_text | color_modify: 'alpha', 0.72
+  assign palette_footer_meta = palette_footer_text | color_modify: 'alpha', 0.62
+  assign palette_progress_track = palette_text | color_modify: 'alpha', 0.08
+%}
 <html lang="{{ request.locale.iso_code }}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="theme-color" content="#111111">
+    <meta name="theme-color" content="{{ palette_bg }}">
     <link rel="canonical" href="{{ canonical_url }}">
 
     {%- if settings.favicon != blank -%}
@@ -28,10 +102,40 @@
     {%- endif -%}
 
     {{ content_for_header }}
+    <style>
+      :root {
+        --color-bg: {{ palette_bg }};
+        --color-surface: {{ palette_surface }};
+        --color-surface-strong: {{ palette_surface_strong }};
+        --color-surface-soft: {{ palette_surface_soft }};
+        --color-surface-medium: {{ palette_surface_medium }};
+        --color-surface-drawer: {{ palette_surface_drawer }};
+        --color-text: {{ palette_text }};
+        --color-muted: {{ palette_muted }};
+        --color-border: {{ palette_border }};
+        --color-border-strong: {{ palette_border_strong }};
+        --color-tint-soft: {{ palette_tint_soft }};
+        --color-overlay: {{ palette_overlay }};
+        --color-inverse: {{ palette_button_text }};
+        --color-dark: {{ palette_footer_bg }};
+        --color-accent: {{ palette_accent }};
+        --color-button-bg: {{ palette_button_bg }};
+        --color-button-text: {{ palette_button_text }};
+        --color-announcement-bg: {{ palette_footer_bg }};
+        --color-announcement-text: {{ palette_footer_text }};
+        --color-header-glass: {{ palette_header_glass }};
+        --color-footer-bg: {{ palette_footer_bg }};
+        --color-footer-text: {{ palette_footer_text }};
+        --color-footer-border: {{ palette_footer_border }};
+        --color-footer-muted: {{ palette_footer_muted }};
+        --color-footer-meta: {{ palette_footer_meta }};
+        --color-progress-track: {{ palette_progress_track }};
+      }
+    </style>
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
   </head>
-  <body class="template-{{ template.name | handle }}">
+  <body class="template-{{ template.name | handle }}" data-theme-palette="{{ palette_mode }}">
     <a class="skip-link" href="#MainContent">Skip to content</a>
 
     {% section 'announcement-bar' %}

@@ -1,5 +1,17 @@
-{% assign main_menu_handle = section.settings.menu | default: 'main-menu' %}
-{% assign main_menu = linklists[main_menu_handle] %}
+{% assign desktop_menu_handle = section.settings.menu | default: 'main-menu' %}
+{% assign desktop_menu = linklists[desktop_menu_handle] %}
+{% assign mobile_menu_handle = section.settings.mobile_menu | default: desktop_menu_handle %}
+{% assign mobile_menu = linklists[mobile_menu_handle] %}
+{% assign transparent_bg_alpha = section.settings.transparent_background_opacity | times: 0.01 %}
+{% assign transparent_background = section.settings.transparent_background | color_modify: 'alpha', transparent_bg_alpha %}
+{% assign transparent_mode = section.settings.transparent_mode | default: 'none' %}
+{% assign transparent_header = false %}
+
+{% if transparent_mode == 'always' %}
+  {% assign transparent_header = true %}
+{% elsif transparent_mode == 'home' and request.page_type == 'index' %}
+  {% assign transparent_header = true %}
+{% endif %}
 
 {% capture site_logo %}
   {% if section.settings.logo_image != blank %}
@@ -17,10 +29,13 @@
 {% endcapture %}
 
 <header
-  class="site-header"
+  class="site-header{% if section.settings.enable_sticky %} site-header--sticky{% else %} site-header--static{% endif %}{% if transparent_header %} site-header--transparent{% endif %}"
   style="
     --logo-width-desktop: {{ section.settings.logo_width_desktop }}px;
     --logo-width-mobile: {{ section.settings.logo_width_mobile }}px;
+    --header-transparent-text: {{ section.settings.transparent_text_color }};
+    --header-transparent-border: {{ section.settings.transparent_border_color }};
+    --header-transparent-background: {{ transparent_background }};
   "
 >
   <div class="page-width site-header__bar">
@@ -28,7 +43,7 @@
 
     <nav class="site-nav" aria-label="Primary">
       <ul class="site-nav__list">
-        {% for link in main_menu.links %}
+        {% for link in desktop_menu.links %}
           {% assign link_title_handle = link.title | downcase | strip %}
           {% assign mega_block = blank %}
           {% for block in section.blocks %}
@@ -179,7 +194,7 @@
 
       <nav aria-label="Mobile">
         <ul class="mobile-nav__list">
-          {% for link in main_menu.links %}
+          {% for link in mobile_menu.links %}
             <li class="mobile-nav__item">
               {% if link.links != blank %}
                 <details class="mobile-nav__details">
@@ -246,9 +261,59 @@
       "default": 120
     },
     {
+      "type": "checkbox",
+      "id": "enable_sticky",
+      "label": "Enable sticky header",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "transparent_mode",
+      "label": "Transparent header",
+      "options": [
+        { "value": "none", "label": "Never" },
+        { "value": "home", "label": "Homepage only" },
+        { "value": "always", "label": "All pages" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "color",
+      "id": "transparent_text_color",
+      "label": "Transparent header text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "transparent_border_color",
+      "label": "Transparent header border color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "transparent_background",
+      "label": "Transparent header background color",
+      "default": "#e9e4de"
+    },
+    {
+      "type": "range",
+      "id": "transparent_background_opacity",
+      "label": "Transparent header background opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 0
+    },
+    {
       "type": "link_list",
       "id": "menu",
-      "label": "Menu"
+      "label": "Desktop menu"
+    },
+    {
+      "type": "link_list",
+      "id": "mobile_menu",
+      "label": "Mobile menu"
     }
   ],
   "blocks": [

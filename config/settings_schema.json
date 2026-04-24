@@ -1,11 +1,93 @@
 [
   {
-    "name": "Theme settings",
+    "name": "Brand",
     "settings": [
       {
         "type": "image_picker",
         "id": "favicon",
         "label": "Favicon"
+      }
+    ]
+  },
+  {
+    "name": "Color Palette",
+    "settings": [
+      {
+        "type": "select",
+        "id": "palette_preset",
+        "label": "Palette preset",
+        "options": [
+          { "value": "sand", "label": "Sandstone" },
+          { "value": "monochrome", "label": "Monochrome" },
+          { "value": "coastal", "label": "Coastal" },
+          { "value": "nocturne", "label": "Nocturne" },
+          { "value": "custom", "label": "Custom" }
+        ],
+        "default": "sand"
+      },
+      {
+        "type": "paragraph",
+        "content": "Choose a preset for quick premium looks, or switch to Custom and control every core color."
+      },
+      {
+        "type": "color",
+        "id": "custom_color_bg",
+        "label": "Custom background",
+        "default": "#e9e4de"
+      },
+      {
+        "type": "color",
+        "id": "custom_color_surface",
+        "label": "Custom surface",
+        "default": "#f3efe9"
+      },
+      {
+        "type": "color",
+        "id": "custom_color_surface_strong",
+        "label": "Custom strong surface",
+        "default": "#dfd7cf"
+      },
+      {
+        "type": "color",
+        "id": "custom_color_text",
+        "label": "Custom text",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "custom_color_muted",
+        "label": "Custom muted text",
+        "default": "#6b655f"
+      },
+      {
+        "type": "color",
+        "id": "custom_color_accent",
+        "label": "Custom accent",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "custom_color_button_bg",
+        "label": "Custom button background",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "custom_color_button_text",
+        "label": "Custom button text",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "custom_color_footer_bg",
+        "label": "Custom footer background",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "custom_color_footer_text",
+        "label": "Custom footer text",
+        "default": "#f0ebe5"
       }
     ]
   }
