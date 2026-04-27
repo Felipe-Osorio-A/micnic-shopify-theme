@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
     "favicon": "",
@@ -13,7 +22,95 @@
     "section_spacing_mobile": 20,
     "button_corner_radius": 0,
     "enable_footer_country_selector": true,
-    "enable_footer_language_selector": true
+    "enable_footer_language_selector": true,
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "settings": {
+          "text": "FREE SHIPPING ON ORDERS OVER $150",
+          "link": "",
+          "enable_rotation": true,
+          "rotation_interval": 5
+        }
+      },
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo_text": "micnic",
+          "logo_alt": "micnic",
+          "logo_width_desktop": 140,
+          "logo_width_mobile": 120,
+          "enable_sticky": true,
+          "transparent_mode": "none",
+          "transparent_text_color": "#ffffff",
+          "transparent_border_color": "#ffffff",
+          "transparent_background": "#e9e4de",
+          "transparent_background_opacity": 0,
+          "menu": "",
+          "mobile_menu": ""
+        }
+      },
+      "newsletter-strip": {
+        "type": "newsletter-strip",
+        "settings": {
+          "heading": "live timeless",
+          "copy": "news, launches and inspiration.",
+          "placeholder": "your email address",
+          "button_label": "subscribe"
+        }
+      },
+      "site-footer": {
+        "type": "site-footer",
+        "settings": {
+          "brand_copy": "A Sydney-based brand. Designed for every chapter of modern life."
+        }
+      },
+      "cart-drawer": {
+        "type": "cart-drawer",
+        "blocks": {
+          "market_threshold_cY4M9j": {
+            "type": "market_threshold",
+            "settings": {
+              "market_label": "Australia",
+              "country_code": "AU",
+              "currency_code": "AUD",
+              "threshold": 150,
+              "message": "You are [amount] away from free shipping."
+            }
+          }
+        },
+        "block_order": [
+          "market_threshold_cY4M9j"
+        ],
+        "settings": {
+          "eyebrow": "your bag",
+          "heading": "Cart",
+          "default_market_label": "your market",
+          "default_free_shipping_threshold": 150,
+          "default_free_shipping_message": "You are [amount] away from free shipping.",
+          "free_shipping_success_message": "Free shipping unlocked for [market].",
+          "gift_eyebrow": "rewards",
+          "gift_heading": "Choose your gift with purchase",
+          "gift_group_default_title": "gift with purchase",
+          "gift_button_label": "add gift",
+          "gift_added_label": "Added to cart",
+          "gift_group_unlocked_label": "Choose one reward",
+          "gift_group_selected_label": "Selected: [gift]",
+          "gift_group_taken_label": "One gift already chosen for this tier",
+          "gift_locked_label": "Spend [amount] more to unlock",
+          "upsell_eyebrow": "complete the look",
+          "upsell_heading": "Curated add-ons",
+          "upsell_button_label": "add",
+          "empty_heading": "Your cart is empty.",
+          "empty_copy": "Build a timeless wardrobe with premium essentials for training, travel, and every day.",
+          "empty_button_label": "continue shopping",
+          "subtotal_label": "Subtotal",
+          "subtotal_note": "Taxes, duties, and shipping are calculated at checkout.",
+          "checkout_label": "checkout"
+        }
+      }
+    },
+    "content_for_index": []
   },
   "presets": {}
 }
