@@ -1,0 +1,127 @@
+<section class="section-shell">
+  <div class="page-width social-gallery">
+    <div class="social-gallery__intro">
+      <div>
+        {% if section.settings.eyebrow != blank %}
+          <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+        {% endif %}
+        <h2 class="section-heading">{{ section.settings.heading }}</h2>
+      </div>
+
+      <div class="social-gallery__meta">
+        {% if section.settings.handle != blank %}
+          <span>{{ section.settings.handle }}</span>
+        {% endif %}
+        {% if section.settings.follow_link != blank %}
+          <a href="{{ section.settings.follow_link }}">{{ section.settings.follow_label }}</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="social-gallery__grid">
+      {% for block in section.blocks %}
+        <a
+          class="social-gallery__card"
+          href="{{ block.settings.link | default: section.settings.follow_link | default: routes.root_url }}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="social-gallery__media">
+            {% if block.settings.image != blank %}
+              {{
+                block.settings.image
+                | image_url: width: 1200
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '240,360,540,720,960,1200',
+                  sizes: '(min-width: 990px) 16vw, 50vw',
+                  alt: block.settings.caption
+              }}
+            {% else %}
+              <img
+                src="{{ 'micnic-photo-home-hero.png' | asset_url }}"
+                alt="{{ block.settings.caption | escape }}"
+                loading="lazy"
+              >
+            {% endif %}
+          </div>
+          {% if block.settings.caption != blank %}
+            <span class="social-gallery__caption">{{ block.settings.caption }}</span>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Social gallery",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "social"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Life in motion."
+    },
+    {
+      "type": "text",
+      "id": "handle",
+      "label": "Handle",
+      "default": "@micnic.life"
+    },
+    {
+      "type": "text",
+      "id": "follow_label",
+      "label": "Follow label",
+      "default": "follow"
+    },
+    {
+      "type": "url",
+      "id": "follow_link",
+      "label": "Follow link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption",
+          "default": "Sydney / everyday uniform"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Social gallery",
+      "blocks": [
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,10 +1,47 @@
-{% if section.settings.text != blank %}
-  <div class="announcement-bar" data-announcement-bar>
+{% liquid
+  assign rotation_enabled = section.settings.enable_rotation
+  assign message_count = 0
+  if section.blocks.size > 0
+    assign message_count = section.blocks.size
+  elsif section.settings.text != blank
+    assign message_count = 1
+  endif
+%}
+
+{% if message_count > 0 %}
+  <div
+    class="announcement-bar"
+    data-announcement-bar
+    {% if rotation_enabled and message_count > 1 %}
+      data-announcement-rotator
+      data-rotation-interval="{{ section.settings.rotation_interval | times: 1000 }}"
+    {% endif %}
+  >
     <div class="page-width announcement-bar__inner">
-      {% if section.settings.link != blank %}
-        <a href="{{ section.settings.link }}">{{ section.settings.text }}</a>
+      {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+          {% if block.settings.text != blank %}
+            <div
+              class="announcement-bar__message{% if forloop.first %} is-active{% endif %}"
+              {% unless forloop.first %}hidden{% endunless %}
+              {{ block.shopify_attributes }}
+            >
+              {% if block.settings.link != blank %}
+                <a href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+              {% else %}
+                {{ block.settings.text }}
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
       {% else %}
-        {{ section.settings.text }}
+        <div class="announcement-bar__message is-active">
+          {% if section.settings.link != blank %}
+            <a href="{{ section.settings.link }}">{{ section.settings.text }}</a>
+          {% else %}
+            {{ section.settings.text }}
+          {% endif %}
+        </div>
       {% endif %}
     </div>
   </div>
@@ -13,17 +50,53 @@
 {% schema %}
 {
   "name": "Announcement bar",
+  "max_blocks": 5,
   "settings": [
     {
       "type": "text",
       "id": "text",
-      "label": "Text",
-      "default": "Free shipping on orders over $150"
+      "label": "Fallback text",
+      "default": "FREE SHIPPING ON ORDERS OVER $150"
     },
     {
       "type": "url",
       "id": "link",
-      "label": "Link"
+      "label": "Fallback link"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_rotation",
+      "label": "Rotate messages",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "rotation_interval",
+      "label": "Rotation speed",
+      "min": 3,
+      "max": 8,
+      "step": 1,
+      "unit": "s",
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "FREE SHIPPING ON ORDERS OVER $150"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
     }
   ]
 }

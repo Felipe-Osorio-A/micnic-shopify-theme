@@ -24,7 +24,7 @@
       height="{{ section.settings.logo_image.height }}"
     >
   {% else %}
-    <span class="site-logo__text">{{ section.settings.logo_text | default: shop.name }}</span>
+    <span class="site-logo__text">{{ section.settings.logo_text | default: settings.brand_wordmark | default: shop.name }}</span>
   {% endif %}
 {% endcapture %}
 

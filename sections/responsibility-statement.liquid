@@ -1,0 +1,111 @@
+<section class="section-shell">
+  <div class="page-width responsibility">
+    <div class="responsibility__intro">
+      {% if section.settings.eyebrow != blank %}
+        <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+      {% endif %}
+      <h2 class="section-heading">{{ section.settings.heading }}</h2>
+      <div class="section-copy">{{ section.settings.copy }}</div>
+      {% if section.settings.link_label != blank %}
+        <a class="button button--secondary" href="{{ section.settings.link | default: routes.root_url }}">
+          {{ section.settings.link_label }}
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="responsibility__grid">
+      {% for block in section.blocks %}
+        <article class="responsibility__card" {{ block.shopify_attributes }}>
+          <h3 class="responsibility__title">{{ block.settings.heading }}</h3>
+          <p class="responsibility__copy">{{ block.settings.copy }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Responsibility statement",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "responsibility"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Responsible by choice."
+    },
+    {
+      "type": "richtext",
+      "id": "copy",
+      "label": "Copy",
+      "default": "<p>Designed with longevity, restraint and responsible production in mind. Premium essentials with a longer horizon.</p>"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "read more"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "point",
+      "name": "Point",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Conscious production"
+        },
+        {
+          "type": "text",
+          "id": "copy",
+          "label": "Copy",
+          "default": "An eco-aware, sweatshop-free approach with fewer, better pieces."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Responsibility statement",
+      "blocks": [
+        {
+          "type": "point",
+          "settings": {
+            "heading": "Conscious production",
+            "copy": "An eco-aware, sweatshop-free approach with fewer, better pieces."
+          }
+        },
+        {
+          "type": "point",
+          "settings": {
+            "heading": "Timeless by design",
+            "copy": "Built to last in both style and performance, not trend-driven."
+          }
+        },
+        {
+          "type": "point",
+          "settings": {
+            "heading": "Longevity over churn",
+            "copy": "Versatile essentials that stay relevant across seasons and routines."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,6 +1,26 @@
 <!doctype html>
 {% liquid
   assign palette_mode = settings.palette_preset | default: 'sand'
+  assign body_font_style = settings.body_font_style | default: 'grotesk'
+  assign display_font_style = settings.display_font_style | default: 'serif'
+
+  case body_font_style
+    when 'humanist'
+      assign body_font_stack = '"Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif'
+    when 'classic'
+      assign body_font_stack = '"Helvetica Neue", Helvetica, Arial, sans-serif'
+    else
+      assign body_font_stack = 'Inter, "Helvetica Neue", Arial, sans-serif'
+  endcase
+
+  case display_font_style
+    when 'refined_sans'
+      assign display_font_stack = '"Avenir Next", "Helvetica Neue", Arial, sans-serif'
+    when 'classic_serif'
+      assign display_font_stack = 'Iowan Old Style, "Palatino Linotype", "Book Antiqua", Georgia, serif'
+    else
+      assign display_font_stack = 'Canela, "IvyPresto Display", "Times New Roman", Georgia, serif'
+  endcase
 
   case palette_mode
     when 'monochrome'
@@ -130,6 +150,14 @@
         --color-footer-muted: {{ palette_footer_muted }};
         --color-footer-meta: {{ palette_footer_meta }};
         --color-progress-track: {{ palette_progress_track }};
+        --font-body: {{ body_font_stack }};
+        --font-display: {{ display_font_stack }};
+        --heading-scale-desktop: {{ settings.heading_scale_desktop | default: 100 | times: 0.01 }};
+        --heading-scale-mobile: {{ settings.heading_scale_mobile | default: 100 | times: 0.01 }};
+        --ui-letter-spacing: {{ settings.ui_letter_spacing | default: 8 | times: 0.01 }}em;
+        --section-spacing-desktop: {{ settings.section_spacing_desktop | default: 28 }}px;
+        --section-spacing-mobile: {{ settings.section_spacing_mobile | default: 20 }}px;
+        --button-radius: {{ settings.button_corner_radius | default: 0 }}px;
       }
     </style>
     {{ 'theme.css' | asset_url | stylesheet_tag }}

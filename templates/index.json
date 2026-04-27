@@ -77,6 +77,34 @@
       "type": "split-story",
       "settings": {}
     },
+    "responsibility": {
+      "type": "responsibility-statement",
+      "blocks": {
+        "point-1": {
+          "type": "point",
+          "settings": {
+            "heading": "conscious production",
+            "copy": "An eco-aware, sweatshop-free approach with fewer, better pieces."
+          }
+        },
+        "point-2": {
+          "type": "point",
+          "settings": {
+            "heading": "timeless by design",
+            "copy": "Built to last in both style and performance, not trend-driven."
+          }
+        },
+        "point-3": {
+          "type": "point",
+          "settings": {
+            "heading": "longevity over churn",
+            "copy": "Versatile essentials that stay relevant across seasons and routines."
+          }
+        }
+      },
+      "block_order": ["point-1", "point-2", "point-3"],
+      "settings": {}
+    },
     "mosaic": {
       "type": "editorial-mosaic",
       "blocks": {
@@ -106,6 +134,68 @@
     },
     "featured": {
       "type": "featured-collection-grid",
+      "settings": {}
+    },
+    "journal": {
+      "type": "journal-feed",
+      "blocks": {
+        "article-1": {
+          "type": "article",
+          "settings": {
+            "kicker": "movement",
+            "heading": "Training Less, Living More",
+            "copy": "Thoughts on balance, movement and modern living."
+          }
+        },
+        "article-2": {
+          "type": "article",
+          "settings": {
+            "kicker": "travel",
+            "heading": "City To Coast, One Uniform",
+            "copy": "A tighter wardrobe for mornings in transit and evenings well dressed."
+          }
+        },
+        "article-3": {
+          "type": "article",
+          "settings": {
+            "kicker": "style",
+            "heading": "The Quiet Power of Better Basics",
+            "copy": "Why restraint, fit and fabric outlast fashion noise."
+          }
+        }
+      },
+      "block_order": ["article-1", "article-2", "article-3"],
+      "settings": {}
+    },
+    "social": {
+      "type": "social-gallery",
+      "blocks": {
+        "image-1": {
+          "type": "image",
+          "settings": {
+            "caption": "coast to city"
+          }
+        },
+        "image-2": {
+          "type": "image",
+          "settings": {
+            "caption": "quiet uniform"
+          }
+        },
+        "image-3": {
+          "type": "image",
+          "settings": {
+            "caption": "travel refined"
+          }
+        },
+        "image-4": {
+          "type": "image",
+          "settings": {
+            "caption": "lifestyle wear"
+          }
+        }
+      },
+      "block_order": ["image-1", "image-2", "image-3", "image-4"],
       "settings": {}
     },
     "values": {
@@ -148,5 +238,5 @@
       "settings": {}
     }
   },
-  "order": ["hero", "categories", "marquee", "story", "mosaic", "featured", "values"]
+  "order": ["hero", "categories", "marquee", "story", "responsibility", "mosaic", "featured", "journal", "social", "values"]
 }

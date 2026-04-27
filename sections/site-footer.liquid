@@ -1,8 +1,22 @@
 <footer class="footer">
   <div class="page-width footer-panel">
-    <div>
-      <a class="footer-logo" href="{{ routes.root_url }}">— micnic</a>
+    <div class="footer-brand">
+      <a class="footer-logo" href="{{ routes.root_url }}">{{ settings.brand_wordmark | default: 'micnic' }}</a>
       <p class="footer-copy">{{ section.settings.brand_copy }}</p>
+
+      {% if settings.social_instagram != blank or settings.social_facebook != blank or settings.social_linkedin != blank %}
+        <div class="footer-social">
+          {% if settings.social_instagram != blank %}
+            <a href="{{ settings.social_instagram }}">instagram</a>
+          {% endif %}
+          {% if settings.social_facebook != blank %}
+            <a href="{{ settings.social_facebook }}">facebook</a>
+          {% endif %}
+          {% if settings.social_linkedin != blank %}
+            <a href="{{ settings.social_linkedin }}">linkedin</a>
+          {% endif %}
+        </div>
+      {% endif %}
     </div>
 
     {% for block in section.blocks %}
@@ -27,13 +41,42 @@
   </div>
 
   <div class="page-width footer-meta">
-    <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
-    <ul class="footer-meta__list">
-      <li><a href="{{ routes.search_url }}">search</a></li>
-      <li><a href="/policies/privacy-policy">privacy policy</a></li>
-      <li><a href="/policies/terms-of-service">terms &amp; conditions</a></li>
-      <li><a href="/sitemap.xml">sitemap</a></li>
-    </ul>
+    <span>© {{ 'now' | date: '%Y' }} {{ settings.brand_wordmark | default: shop.name }}. All rights reserved.</span>
+
+    <div class="footer-meta__end">
+      {% if settings.enable_footer_country_selector and localization.available_countries.size > 1 %}
+        {% form 'localization', class: 'footer-localization' %}
+          <label class="visually-hidden" for="FooterCountrySelector">Country</label>
+          <select id="FooterCountrySelector" name="country_code" onchange="this.form.submit()">
+            {% for country in localization.available_countries %}
+              <option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected{% endif %}>
+                {{ country.name }} ({{ country.currency.iso_code }})
+              </option>
+            {% endfor %}
+          </select>
+        {% endform %}
+      {% endif %}
+
+      {% if settings.enable_footer_language_selector and localization.available_languages.size > 1 %}
+        {% form 'localization', class: 'footer-localization' %}
+          <label class="visually-hidden" for="FooterLanguageSelector">Language</label>
+          <select id="FooterLanguageSelector" name="language_code" onchange="this.form.submit()">
+            {% for language in localization.available_languages %}
+              <option value="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>
+                {{ language.endonym_name | capitalize }}
+              </option>
+            {% endfor %}
+          </select>
+        {% endform %}
+      {% endif %}
+
+      <ul class="footer-meta__list">
+        <li><a href="{{ routes.search_url }}">search</a></li>
+        <li><a href="/policies/privacy-policy">privacy policy</a></li>
+        <li><a href="/policies/terms-of-service">terms &amp; conditions</a></li>
+        <li><a href="/sitemap.xml">sitemap</a></li>
+      </ul>
+    </div>
   </div>
 </footer>
 

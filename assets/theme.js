@@ -111,6 +111,29 @@ function initRevealObserver() {
   reveals.forEach((item) => observer.observe(item));
 }
 
+function initAnnouncementRotator() {
+  window.micnicAnnouncementTimer && window.clearInterval(window.micnicAnnouncementTimer);
+
+  const bar = document.querySelector("[data-announcement-rotator]");
+  const messages = bar ? [...bar.querySelectorAll(".announcement-bar__message")] : [];
+  if (!bar || messages.length < 2) return;
+
+  let activeIndex = messages.findIndex((message) => !message.hidden);
+  if (activeIndex < 0) activeIndex = 0;
+
+  const interval = Number(bar.dataset.rotationInterval) || 5000;
+
+  window.micnicAnnouncementTimer = window.setInterval(() => {
+    messages[activeIndex].hidden = true;
+    messages[activeIndex].classList.remove("is-active");
+
+    activeIndex = (activeIndex + 1) % messages.length;
+
+    messages[activeIndex].hidden = false;
+    messages[activeIndex].classList.add("is-active");
+  }, interval);
+}
+
 function initHeaderBehavior() {
   window.micnicHeaderController?.abort?.();
 
@@ -382,3 +405,4 @@ document.addEventListener("keydown", (event) => {
 initRevealObserver();
 initHeaderBehavior();
 bindProductForms();
+initAnnouncementRotator();

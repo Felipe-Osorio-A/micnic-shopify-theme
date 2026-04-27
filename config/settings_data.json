@@ -1,7 +1,19 @@
 {
   "current": {
     "favicon": "",
-    "palette_preset": "sand"
+    "brand_wordmark": "micnic",
+    "brand_tagline": "live timeless",
+    "palette_preset": "sand",
+    "body_font_style": "grotesk",
+    "display_font_style": "serif",
+    "heading_scale_desktop": 100,
+    "heading_scale_mobile": 100,
+    "ui_letter_spacing": 8,
+    "section_spacing_desktop": 28,
+    "section_spacing_mobile": 20,
+    "button_corner_radius": 0,
+    "enable_footer_country_selector": true,
+    "enable_footer_language_selector": true
   },
   "presets": {}
 }

@@ -6,6 +6,18 @@
         "type": "image_picker",
         "id": "favicon",
         "label": "Favicon"
+      },
+      {
+        "type": "text",
+        "id": "brand_wordmark",
+        "label": "Brand wordmark",
+        "default": "micnic"
+      },
+      {
+        "type": "text",
+        "id": "brand_tagline",
+        "label": "Brand tagline",
+        "default": "live timeless"
       }
     ]
   },
@@ -88,6 +100,130 @@
         "id": "custom_color_footer_text",
         "label": "Custom footer text",
         "default": "#f0ebe5"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "select",
+        "id": "body_font_style",
+        "label": "Body/UI type",
+        "options": [
+          { "value": "grotesk", "label": "Grotesk sans" },
+          { "value": "humanist", "label": "Humanist sans" },
+          { "value": "classic", "label": "Classic sans" }
+        ],
+        "default": "grotesk"
+      },
+      {
+        "type": "select",
+        "id": "display_font_style",
+        "label": "Editorial display type",
+        "options": [
+          { "value": "serif", "label": "Editorial serif" },
+          { "value": "refined_sans", "label": "Refined sans" },
+          { "value": "classic_serif", "label": "Classic serif" }
+        ],
+        "default": "serif"
+      },
+      {
+        "type": "range",
+        "id": "heading_scale_desktop",
+        "label": "Desktop heading scale",
+        "min": 90,
+        "max": 120,
+        "step": 5,
+        "unit": "%",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "heading_scale_mobile",
+        "label": "Mobile heading scale",
+        "min": 85,
+        "max": 115,
+        "step": 5,
+        "unit": "%",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "ui_letter_spacing",
+        "label": "UI letter spacing",
+        "min": 4,
+        "max": 18,
+        "step": 1,
+        "unit": "px",
+        "default": 8
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "section_spacing_desktop",
+        "label": "Section spacing desktop",
+        "min": 20,
+        "max": 72,
+        "step": 4,
+        "unit": "px",
+        "default": 28
+      },
+      {
+        "type": "range",
+        "id": "section_spacing_mobile",
+        "label": "Section spacing mobile",
+        "min": 12,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "button_corner_radius",
+        "label": "Button corner radius",
+        "min": 0,
+        "max": 24,
+        "step": 2,
+        "unit": "px",
+        "default": 0
+      }
+    ]
+  },
+  {
+    "name": "Social & Regional",
+    "settings": [
+      {
+        "type": "url",
+        "id": "social_instagram",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "url",
+        "id": "social_facebook",
+        "label": "Facebook URL"
+      },
+      {
+        "type": "url",
+        "id": "social_linkedin",
+        "label": "LinkedIn URL"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_footer_country_selector",
+        "label": "Enable footer country selector",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_footer_language_selector",
+        "label": "Enable footer language selector",
+        "default": true
       }
     ]
   }
